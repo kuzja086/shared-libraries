@@ -169,5 +169,5 @@ def updateInfobase(connString, admin1cUser, admin1cPassword, platform) {
 
 def registerComponent() {
     utils = new Utils()
-    utils.cmd("regsvr32 ""C:/Program Files (x86)/1cv8/8.3.14.1779/bin/comcntr.dll""")
+    utils.cmd("regsvr32 \"C:/Program Files (x86)/1cv8/8.3.14.1779/bin/comcntr.dll\"")
 }
