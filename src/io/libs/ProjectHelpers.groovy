@@ -178,8 +178,3 @@ def updateInfobase(connString, admin1cUser, admin1cPassword, platform) {
         utils.raiseError("Обновление базы ${connString} в режиме конфигуратора завершилось с ошибкой. Для дополнительной информации смотрите логи")
     }
 }
-
-def registerComponent() {
-    utils = new Utils()
-    utils.cmd("regsvr32 \"C:/Program Files (x86)/1cv8/8.3.14.1779/bin/comcntr.dll\"")
-}
