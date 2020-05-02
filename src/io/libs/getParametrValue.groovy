@@ -35,5 +35,9 @@ def getDefaultParams(){
 
         // Тестирование
 
+        //Git
+        'branch' : 'master', // Ветка Git по умолчанию
+        'credentialsId' : 'GitHub ID', // Имя credentialsId для GitHub
+        'targetDir' : './tools' // Каталог для вспомогательных инструментов
     ]
 }

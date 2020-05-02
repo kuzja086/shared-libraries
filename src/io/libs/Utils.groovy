@@ -90,14 +90,19 @@ def currentDateWithFormat(format) {
 //  targetDir - каталог, куда клонировать репозиторий 
 //  branch - имя ветки, которую клонировать
 //
-def checkoutSCM(repo, targetDir, branch) {
+def checkoutSCM(Map buildEnv) {
+    def branch        = getParametrValue(buildEnv, 'branch')
+    def credentialsId = getParametrValue(buildEnv, 'credentialsId')
+    def repo          = getParametrValue(buildEnv, 'repo')
+    def targetDir     = getParametrValue(buildEnv, 'targetDir')
+
     checkout changelog: false,
     poll: false,
     scm: [$class: 'GitSCM', 
         branches: [[name: branch]],
         doGenerateSubmoduleConfigurations: false,
         submoduleCfg: [], 
-        userRemoteConfigs: [[credentialsId: "bitbuket_user", url: repo]],
+        userRemoteConfigs: [[credentialsId: credentialsId, url: repo]],
         extensions: [
             [$class: 'CleanBeforeCheckout'],
             [$class: 'RelativeTargetDirectory', 

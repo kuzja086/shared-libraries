@@ -44,7 +44,8 @@ def call(Map buildEnv){
                 timestamps {
                     script {
                         PROJECT_NAME_EDT = "${CURRENT_CATALOG}\\${PROJECT_NAME}"
-                        cmd("""
+
+                        utils.cmd("""
                         @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
                         ring edt@${EDT_VERSION} workspace export --workspace-location \"${TEMP_CATALOG}\" --project \"${PROJECT_NAME_EDT}\" --configuration-files \"${XMLPATH}\
                         """)
@@ -58,12 +59,21 @@ def call(Map buildEnv){
                     script {
                         IB = "File=${TEMP_CATALOG}"
 
-                        cmd("""
+                        utils.cmd("""
                         cd /D C:\\Program Files (x86)\\1cv8\\${PLATFORM1C}\\bin\\
                         1cv8.exe CREATEINFOBASE ${IB}
                         1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${IB} /LoadConfigFromFiles ${XMLPATH} /UpdateDBCfg
                         """)
                    }
+                }
+            }
+        }
+        stage('Сохранение файла .cfe') {
+            steps {
+                timestamps {
+                    script {
+                        // Нужно сохранить файл cfe, если надо
+                    }
                 }
             }
         }
@@ -73,7 +83,7 @@ def call(Map buildEnv){
                     script {
                         CFPATH = "${CFPATH}\\${PROJECT_NAME}.cf" 
 
-                        cmd("""
+                        utils.cmd("""
                         cd /D C:\\Program Files (x86)\\1cv8\\${PLATFORM1C}\\bin\\
                         1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${IB} /CreateDistributionFiles -cffile ${CFPATH}
                         """)
