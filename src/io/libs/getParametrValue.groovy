@@ -20,7 +20,8 @@ String call(Map buildParams, String keyName) {
 def getDefaultParams(){
     return [
         // Общие параметры
-        'isFileBase': 'false', // Это файловая база
+        'agent' : 'testserver' // Имя агента
+        'isFileBase' : 'false', // Это файловая база
         'fileBasePath': 'C:\\temp', // Путь к файловой базе
         'server1c' : 'sqlserever', // Адрес сервера 1С
         'agent1cPort' : '2441', // Порт агента сервера 1С
@@ -40,7 +41,7 @@ def getDefaultParams(){
 
         //Git
         'branch' : 'master', // Ветка Git по умолчанию
-        'credentialsId' : 'GitHub ID', // Имя credentialsId для GitHub
+        'credentialsId' : 'GitHubID', // Имя credentialsId для GitHub
         'targetDir' : './tools' // Каталог для вспомогательных инструментов
     ]
 }
