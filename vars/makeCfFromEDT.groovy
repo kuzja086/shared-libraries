@@ -2,7 +2,7 @@ package io.libs
 
 def call(Map buildEnv){
     def projectHelpers = new ProjectHelpers()
-    def connectionString = projectHelpers.getconnectionString(buildEnv)
+    def connectionString = projectHelpers.getConnectionString(buildEnv)
 
     pipeline {
         agent {
