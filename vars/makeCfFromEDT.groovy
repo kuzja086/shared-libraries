@@ -6,7 +6,7 @@ def call(Map buildEnv){
 
     pipeline {
         agent {
-            label getParametrValue(buildEnv, 'agentm')
+            label "" + getParametrValue(buildEnv, 'agent')
         }
 
         post { // Выполняется после сборки
