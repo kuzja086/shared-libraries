@@ -76,6 +76,8 @@ def currentDateStamp() {
 // Возвращаемое значение
 //  String - текущая дата
 //
+
+//Надо переделать
 def currentDateWithFormat(format) {
     dateFormat = new SimpleDateFormat(format);
     date = new Date();
