@@ -5,9 +5,7 @@ def call(Map buildEnv){
     def connectionString = projectHelpers.getConnectionString(buildEnv)
 
     pipeline {
-        agent {
-            label "" + getParametrValue(buildEnv, 'agent')
-        }
+        agent  any
 
         post { // Выполняется после сборки
             failure {
