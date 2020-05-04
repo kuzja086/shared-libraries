@@ -20,7 +20,7 @@ String call(Map buildParams, String keyName) {
 def getDefaultParams(){
     return [
         // Общие параметры
-        'agent' : 'testserver', // Имя агента
+        'agentm' : 'testserver', // Имя агента
         'isFileBase' : 'false', // Это файловая база
         'fileBasePath': 'C:\\temp', // Путь к файловой базе
         'server1c' : 'sqlserever', // Адрес сервера 1С
