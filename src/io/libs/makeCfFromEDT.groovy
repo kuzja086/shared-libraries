@@ -23,6 +23,9 @@ def call(Map buildEnv){
             PLATFORM1C       = getParametrValue(buildEnv, 'platform1C')
             CFPATH           = getParametrValue(buildEnv, 'cfPath')
             CURRENT_CATALOG  = pwd()
+            SAVEEXTENSIONINFILE = getParametrValue(buildEnv, 'saveExtensionInFile')
+            EXTENSION = getParametrValue(buildEnv, 'extension')
+            XMLPATHEXTENSION = getParametrValue(buildEnv, 'xmlPathExtension')
         }
 
         stage('Инициализация') {
@@ -45,10 +48,7 @@ def call(Map buildEnv){
                     script {
                         PROJECT_NAME_EDT = "${CURRENT_CATALOG}\\${PROJECT_NAME}"
 
-                        utils.cmd("""
-                        @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-                        ring edt@${EDT_VERSION} workspace export --workspace-location \"${TEMP_CATALOG}\" --project \"${PROJECT_NAME_EDT}\" --configuration-files \"${XMLPATH}\
-                        """)
+                        dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH)
                    }
                 }
             }
@@ -68,15 +68,6 @@ def call(Map buildEnv){
                 }
             }
         }
-        stage('Сохранение файла .cfe') {
-            steps {
-                timestamps {
-                    script {
-                        // Нужно сохранить файл cfe, если надо
-                    }
-                }
-            }
-        }
         stage('Сохранение файла .cf') {
             steps {
                 timestamps {
@@ -91,9 +82,36 @@ def call(Map buildEnv){
                 }
             }
         }
+         stage('Сохранение файла .cfe') {
+            steps {
+                timestamps {
+                    script {
+                        if (SAVEEXTENSIONINFILE.trim().equals('true')){
+                            PROJECT_NAME_EDT = "${CURRENT_CATALOG}\\${EXTENSION}"
+                            dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATHEXTENSION)
+
+                            utils.cmd("""
+                            cd /D C:\\Program Files (x86)\\1cv8\\${PLATFORM1C}\\bin\\
+                            1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${IB} /LoadConfigFromFiles ${XMLPAthExtension} -Extension ${Extension} /UpdateDBCfg
+                            1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${IB} /DumpCfg ${ExtensionPath} -Extension ${Extension}
+                            """)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 def call(){
     call([:])
+}
+
+def dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH) {
+    return {
+          utils.cmd("""
+                    @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
+                    ring edt@${EDT_VERSION} workspace export --workspace-location \"${TEMP_CATALOG}\" --project \"${PROJECT_NAME_EDT}\" --configuration-files \"${XMLPATH}\
+                    """)  
+    }
 }

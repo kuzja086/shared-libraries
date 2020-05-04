@@ -28,7 +28,10 @@ def getDefaultParams(){
         'tempCatalog' : './temp', // Служебный каталог
         'platform1C' : '8.3.14.1779', //Версия платформы
         'xmlPath' : './xmlpath', // Путь к выгрузке файлов конфигурации
-        'cfPath' : './build', // Каталог для выгрузкки *.cf
+        'cfPath' : './build', // Каталог для выгрузкки *.cf и *.cfe
+        'saveExtensionInFile' : 'false' // Сохранить расширение в файл *.cfe
+        'extension' : "extension" // Имя расширения по умолчанию
+        'xmlPathExtension' : './xmlpathExtension', // Путь к выгрузке файлов расширения
 
         // EDT
         'edtVersion' : '2020.3',
