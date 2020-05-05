@@ -1,5 +1,3 @@
-package io.libs
-
 def call(Map buildEnv){
     def projectHelpers = new ProjectHelpers()
     def connectionString = projectHelpers.getConnectionString(buildEnv)
