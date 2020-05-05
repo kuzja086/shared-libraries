@@ -27,14 +27,14 @@ def getDefaultParams(){
         'server1c' : 'sqlserever', // Адрес сервера 1С
         'agent1cPort' : '2441', // Порт агента сервера 1С
         'infobase' : 'tempBase', // Имя базы на сервере
-        'tempCatalog' : './temp', // Служебный каталог
+        'tempCatalog' : "${CURRENT_CATALOG}\\temp", // Служебный каталог
         'platform1C' : '8.3.14.1779', //Версия платформы
-        'xmlPath' : './xmlpath', // Путь к выгрузке файлов конфигурации
-        'cfPath' : './build', // Каталог для выгрузкки *.cf и *.cfe
+        'xmlPath' : "${CURRENT_CATALOG}\\xmlpath", // Путь к выгрузке файлов конфигурации
+        'cfPath' : "${CURRENT_CATALOG}\\build", // Каталог для выгрузкки *.cf и *.cfe
         'emailForNotification' : 'kozs@tlink.ru', // Email для отправки результатов сборки
         'saveExtensionInFile' : 'false', // Сохранить расширение в файл *.cfe
         'extension' : "extension", // Имя расширения по умолчанию
-        'xmlPathExtension' : './xmlpathExtension', // Путь к выгрузке файлов расширения
+        'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension", // Путь к выгрузке файлов расширения
 
         // EDT
         'edtVersion' : '2020.3',
@@ -45,6 +45,6 @@ def getDefaultParams(){
         //Git
         'branch' : 'master', // Ветка Git по умолчанию
         'credentialsId' : 'GitHubID', // Имя credentialsId для GitHub
-        'targetDir' : './tools' // Каталог для вспомогательных инструментов
+        'targetDir' : "${CURRENT_CATALOG}\\tools" // Каталог для вспомогательных инструментов
     ]
 }
