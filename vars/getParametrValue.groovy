@@ -37,6 +37,7 @@ def getDefaultParams(){
 
         // EDT
         'edtVersion' : '2020.3',
+        'projectNameEDT' : 'projectNameEDT'
 
         // Тестирование
 
