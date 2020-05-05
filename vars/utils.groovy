@@ -6,7 +6,7 @@ def getConnectionString(Map buildEnv) {
     def infobase     = getParametrValue(buildEnv, 'infobase')
 
     if(isFileBase.trim().equals("true")) {
-       connectionString =  
+       connectionString = "/F${fileBasePath}" 
     }
     else{
         connectionString = "/S${server1c}:${agent1cPort}\\${infobase}"
