@@ -1,9 +1,4 @@
-package io.libs
-
 def call(Map buildEnv){
-    // def projectHelpers = new ProjectHelpers()
-    // def connectionString = projectHelpers.getConnectionString(buildEnv)
-
     pipeline {
         agent {
             label getParametrValue(buildEnv, 'agent')

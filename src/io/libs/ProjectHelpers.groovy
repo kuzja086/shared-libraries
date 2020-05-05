@@ -60,20 +60,8 @@ def unlocking1cBase(connString, admin1cUsr, admin1cPwd) {
     utils.cmd("runner run --execute ${env.WORKSPACE}/one_script_tools/unlockBase1C.epf --command \"-locktype unlock\" ${admin1cUsrLine} ${admin1cPwdLine} --ibconnection=${connString}")
 }
 
-def getConnectionString(Map buildEnv) {
-    def isFileBase   = getParametrValue(buildEnv, 'isFileBase')
-    def fileBasePath = getParametrValue(buildEnv, 'fileBasePath')
-    def server1c     = getParametrValue(buildEnv, 'server1c')
-    def agent1cPort  = getParametrValue(buildEnv, 'agent1cPort')
-    def infobase     = getParametrValue(buildEnv, 'infobase')
-
-    if(isFileBase.trim().equals("true")) {
-       connectionString = "/F${fileBasePath}" 
-    }
-    else{
-        connectionString = "/S${server1c}:${agent1cPort}\\${infobase}"
-    }
-    return connectionString
+def getConnString(server1c, infobase, agent1cPort) {
+    return "/S${server1c}:${agent1cPort}\\${infobase}"
 }
 
 // Удаляет базу из кластера через powershell.
