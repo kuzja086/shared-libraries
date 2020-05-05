@@ -12,16 +12,16 @@ def call(Map buildEnv){
 
         environment {
             // Заполнить параметры для пайплайна
-            EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
-            TEMP_CATALOG     = getParametrValue(buildEnv, 'tempCatalog')
-            PROJECT_NAME     = getParametrValue(buildEnv, 'projectNameEDT')
-            XMLPATH          = getParametrValue(buildEnv, 'xmlPath')
-            PLATFORM1C       = getParametrValue(buildEnv, 'platform1C')
-            CFPATH           = getParametrValue(buildEnv, 'cfPath')
-            CURRENT_CATALOG  = pwd()
-            SAVEEXTENSIONINFILE = getParametrValue(buildEnv, 'saveExtensionInFile')
-            EXTENSION = getParametrValue(buildEnv, 'extension')
-            XMLPATHEXTENSION = getParametrValue(buildEnv, 'xmlPathExtension')
+            def CURRENT_CATALOG  = pwd()
+            def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
+            def TEMP_CATALOG     = getParametrValue(buildEnv, 'tempCatalog')
+            def PROJECT_NAME     = getParametrValue(buildEnv, 'projectNameEDT')
+            def XMLPATH          = getParametrValue(buildEnv, 'xmlPath')
+            def PLATFORM1C       = getParametrValue(buildEnv, 'platform1C')
+            def CFPATH           = getParametrValue(buildEnv, 'cfPath')
+            def SAVEEXTENSIONINFILE = getParametrValue(buildEnv, 'saveExtensionInFile')
+            def EXTENSION = getParametrValue(buildEnv, 'extension')
+            def XMLPATHEXTENSION = getParametrValue(buildEnv, 'xmlPathExtension')
         }
 
         stages{
