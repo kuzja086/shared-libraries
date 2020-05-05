@@ -30,8 +30,8 @@ def cmd(String _command, String credentionalID){
 
 def cmd(String _command){
     if (isUnix()){
-        sh "${command}"
+        sh "${_command}"
     }else {
-        bat "chcp 65001\n${command}"
+        bat "chcp 65001\n${_command}"
     }
 }
