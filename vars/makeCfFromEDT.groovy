@@ -45,7 +45,7 @@ def call(Map buildEnv){
                         script {
                             PROJECT_NAME_EDT = "${CURRENT_CATALOG}\\${PROJECT_NAME}"
                             println PROJECT_NAME_EDT
-                            dumpProjectEDTInFiles[PROJECT_NAME_EDT] = dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH)
+                            dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH)
                     }
                     }
                 }
@@ -107,11 +107,9 @@ def call(){
 }
 
 def dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH) {
-    return {
-         println "Выгрузка проекта из EDT" 
-          utils.cmd("""
-                    @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-                    ring edt@${EDT_VERSION} workspace export --workspace-location ${TEMP_CATALOG} --project ${PROJECT_NAME_EDT} --configuration-files ${XMLPATH}
-                    """)  
-    }
+    println "Выгрузка проекта из EDT" 
+    utils.cmd("""
+            @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
+            ring edt@${EDT_VERSION} workspace export --workspace-location ${TEMP_CATALOG} --project ${PROJECT_NAME_EDT} --configuration-files ${XMLPATH}
+             """)  
 }
