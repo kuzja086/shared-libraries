@@ -4,11 +4,11 @@ def call(Map buildEnv){
             label getParametrValue(buildEnv, 'agent')
         }
 
-        post { // Выполняется после сборки
-            failure {
-               // sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
-            }
-        }
+        // post { // Выполняется после сборки
+        //     failure {
+        //        // sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
+        //     }
+        // }
 
         environment {
             // Заполнить параметры для пайплайна
