@@ -111,7 +111,7 @@ def dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH) 
          println "Выгрузка проекта из EDT" 
           utils.cmd("""
                     @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-                    ring edt@${EDT_VERSION} workspace export --workspace-location \"${TEMP_CATALOG}\" --project \"${PROJECT_NAME_EDT}\" --configuration-files \"${XMLPATH}\
+                    ring edt@${EDT_VERSION} workspace export --workspace-location ${TEMP_CATALOG} --project ${PROJECT_NAME_EDT} --configuration-files ${XMLPATH}
                     """)  
     }
 }
