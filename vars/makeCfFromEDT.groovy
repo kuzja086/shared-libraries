@@ -12,7 +12,7 @@ def call(Map buildEnv){
             }
         }
 
-        enviroment {
+        environment {
             // Заполнить параметры для пайплайна
             EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
             TEMP_CATALOG     = getParametrValue(buildEnv, 'tempCatalog')
