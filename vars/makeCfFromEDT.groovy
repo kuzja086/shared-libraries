@@ -1,8 +1,8 @@
 package io.libs
 
 def call(Map buildEnv){
-    def projectHelper = new projectHelper()
-    def connectionString = projectHelper.getConnectionString(buildEnv)
+    // def projectHelpers = new ProjectHelpers()
+    // def connectionString = projectHelpers.getConnectionString(buildEnv)
 
     pipeline {
         agent {
@@ -88,6 +88,7 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
+                            // TODO Сделать цикл по расширениям, передавать через запятую имена расширений
                             if (SAVEEXTENSIONINFILE.trim().equals('true')){
                                 PROJECT_NAME_EDT = "${CURRENT_CATALOG}\\${EXTENSION}"
                                 dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATHEXTENSION)
