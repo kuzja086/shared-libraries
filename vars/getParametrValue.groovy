@@ -18,6 +18,7 @@ String call(Map buildParams, String keyName) {
 }
 
 def getDefaultParams(){
+    CURRENT_CATALOG = pwd()
     return [
         // Общие параметры
         'agent' : 'testserver', // Имя агента

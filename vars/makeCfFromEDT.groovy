@@ -44,8 +44,8 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             PROJECT_NAME_EDT = "${CURRENT_CATALOG}\\${PROJECT_NAME}"
-
-                            dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH)
+                            println PROJECT_NAME_EDT
+                            dumpProjectEDTInFiles[PROJECT_NAME_EDT] = dumpProjectEDTInFiles(EDT_VERSION, TEMP_CATALOG, PROJECT_NAME_EDT, XMLPATH)
                     }
                     }
                 }
