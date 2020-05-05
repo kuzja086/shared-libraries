@@ -13,3 +13,21 @@ def getConnectionString(Map buildEnv) {
     }
     return connectionString
 }
+
+def cmd(String _command, String credentionalID){
+    if(credentionalID.trim().isEmpty()){
+        command = _command.replace("username", "")
+        command = _command.replace("password", "")
+    }
+
+    withCredentials([usernamePassword(credentionalsId: "${credentionalID}", usernameVarible: 'USERNAME', passwordVarible: 'PASSWORD')])
+
+    command = _command.replace("username", USERNAME)
+    command = _command.replace("password", PASSWORD)
+
+    if (isUnix()){
+        sh "${command}"
+    }else {
+        bat "chcp 65001\n${command}"
+    }
+}
