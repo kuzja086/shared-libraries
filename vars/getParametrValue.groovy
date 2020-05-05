@@ -18,7 +18,7 @@ String call(Map buildParams, String keyName) {
 }
 
 def getDefaultParams(){
-   CURRENT_CATALOG = ${env.WORKSPACE}
+   CURRENT_CATALOG = "${env.WORKSPACE}"
     return [
         // Общие параметры
         'agent' : 'testserver', // Имя агента
