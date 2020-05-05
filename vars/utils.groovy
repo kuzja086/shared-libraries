@@ -25,6 +25,10 @@ def cmd(String _command, String credentionalID){
     command = _command.replace("username", USERNAME)
     command = _command.replace("password", PASSWORD)
 
+    cmd(command)
+}
+
+def cmd(String _command){
     if (isUnix()){
         sh "${command}"
     }else {
