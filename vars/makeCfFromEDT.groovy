@@ -1,6 +1,5 @@
 def call(Map buildEnv){
-    def projectHelpers = new ProjectHelpers()
-    def connectionString = projectHelpers.getConnectionString(buildEnv)
+    def connectionString = utils.getConnectionString(buildEnv)
 
     pipeline {
         agent {
