@@ -25,10 +25,12 @@ def getDefaultParams(){
         'isFileBase' : 'false', // Это файловая база
         'fileBasePath': 'C:\\temp', // Путь к файловой базе
         'server1c' : 'sqlserever', // Адрес сервера 1С
-        'agent1cPort' : '2441', // Порт агента сервера 1С
+        'server1cPort' : '2440', // Порт рабочего сервера 1с. Не путать с портом агента кластера (2441)
+        'agent1cPort' : '2441', // Порт агента кластера 1с
         'infobase' : 'tempBase', // Имя базы на сервере
         'tempCatalog' : "${CURRENT_CATALOG}\\temp", // Служебный каталог
         'platform1C' : '8.3.14.1779', //Версия платформы
+        'serverSql' : 'testserver\\sqlexpress', // Адрес sql сервера
         'xmlPath' : "${CURRENT_CATALOG}\\xmlpath", // Путь к выгрузке файлов конфигурации
         'cfPath' : "${CURRENT_CATALOG}\\build", // Каталог для выгрузкки *.cf и *.cfe
         'emailForNotification' : 'kozs@tlink.ru', // Email для отправки результатов сборки
