@@ -17,19 +17,19 @@ def call(Map buildEnv){
         }
 
         post { // Выполняется после сборки
-            always {
-                script {
-                    if (currentBuild.result == "ABORTED") {
-                        return
-                    }
+            // always {
+            //     script {
+            //         if (currentBuild.result == "ABORTED") {
+            //             return
+            //         }
 
-                    dir ('build/out/allure') {
-                        writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
-                    }
+            //         dir ('build/out/allure') {
+            //             writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
+            //         }
 
-                    allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
-                }
-            }
+            //         allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
+            //     }
+            // }
             // Варианты в документации
             failure {
                sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
@@ -70,85 +70,6 @@ def call(Map buildEnv){
                             dir ('build') {
                                 writeFile file:'dummy', text:''
                             }
-                        }
-                    }
-                }
-            }
-            stage("Запуск") {
-                steps {
-                    timestamps {
-                        script {
-
-                            for (i = 0;  i < templatebasesList.size(); i++) {
-                                templateDb = templatebasesList[i]
-                                storage1cPath = storages1cPathList[i]
-                                testbase = "test_${templateDb}"
-                                templateDbConnString = projectHelpers.getConnString(server1c, templateDb, agent1cPort)
-                                testbaseConnString = projectHelpers.getConnString(server1c, testbase, agent1cPort)
-                                backupPath = "${temppath}/temp_${templateDb}_${utils.currentDateStamp()}"
-
-                                // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
-                                dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
-                                    server1c, 
-                                    server1cPort, 
-                                    serverSql, 
-                                    testbase, 
-                                    admin1cUser, 
-                                    admin1cPwd,
-                                    sqluser,
-                                    sqlPwd
-                                )
-                                // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
-                                updateDbTasks["updateTask_${templateDb}"] = updateDbTask(
-                                    platform1c,
-                                    templateDb, 
-                                    storage1cPath, 
-                                    storageUser, 
-                                    storagePwd, 
-                                    templateDbConnString, 
-                                    admin1cUser, 
-                                    admin1cPwd
-                                )
-                                // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
-                                backupTasks["backupTask_${templateDb}"] = backupTask(
-                                    serverSql, 
-                                    templateDb, 
-                                    backupPath,
-                                    sqlUser,
-                                    sqlPwd
-                                )
-                                // 4. Загружаем sql бекап эталонной базы в тестовую
-                                restoreTasks["restoreTask_${testbase}"] = restoreTask(
-                                    serverSql, 
-                                    testbase, 
-                                    backupPath,
-                                    sqlUser,
-                                    sqlPwd
-                                )
-                                // 5. Создаем тестовую базу кластере 1С
-                                createDbTasks["createDbTask_${testbase}"] = createDbTask(
-                                    "${server1c}:${agent1cPort}",
-                                    serverSql,
-                                    platform1c,
-                                    testbase,
-                                    sqlUser,
-                                    sqlPwd
-                                )
-                                // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
-                                runHandlers1cTasks["runHandlers1cTask_${testbase}"] = runHandlers1cTask(
-                                    testbase, 
-                                    admin1cUser, 
-                                    admin1cPwd,
-                                    testbaseConnString
-                                )
-                            }
-
-                            parallel dropDbTasks
-                            parallel updateDbTasks
-                            parallel backupTasks
-                            parallel restoreTasks
-                            parallel createDbTasks
-                            parallel runHandlers1cTasks
                         }
                     }
                 }
