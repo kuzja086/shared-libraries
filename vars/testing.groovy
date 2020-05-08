@@ -1,8 +1,3 @@
-package io.libs
-
-def sqlUtils = new SqlUtils()
-def utils = new Utils()
-def projectHelpers = new ProjectHelpers()
 def backupTasks = [:]
 def restoreTasks = [:]
 def dropDbTasks = [:]
