@@ -1,5 +1,15 @@
 package io.libs
 
+def sqlUtils = new SqlUtils()
+def utils = new Utils()
+def projectHelpers = new ProjectHelpers()
+def backupTasks = [:]
+def restoreTasks = [:]
+def dropDbTasks = [:]
+def createDbTasks = [:]
+def runHandlers1cTasks = [:]
+def updateDbTasks = [:]
+
 def call(Map buildEnv){
     pipeline {
         agent {
@@ -7,23 +17,40 @@ def call(Map buildEnv){
         }
 
         post { // Выполняется после сборки
+            always {
+                script {
+                    if (currentBuild.result == "ABORTED") {
+                        return
+                    }
+
+                    dir ('build/out/allure') {
+                        writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
+                    }
+
+                    allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
+                }
+            }
             // Варианты в документации
             failure {
-               sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
+            //    sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
             }
         }
 
         environment {
             // Заполнить параметры для пайплайна
+            // TODO Добавить обязательные или нет с комментариями
             def CURRENT_CATALOG  = pwd()
-            def server1c      = getParametrValue(buildEnv, 'server1c')
-            def server1cPort      = getParametrValue(buildEnv, 'server1c')
-            def agent1cPort      = getParametrValue(buildEnv, 'agent1cPort') 
-            def platform1c      = getParametrValue(buildEnv, 'platform1C') 
-            def serverSql      = getParametrValue(buildEnv, 'serverSql')
-            def templatebases      = getParametrValue(buildEnv, 'templatebases')
-            def storages1cPath      = getParametrValue(buildEnv, 'storages1cPath')
-            def tempCatalog      = getParametrValue(buildEnv, 'tempCatalog')            
+            def server1c = getParametrValue(buildEnv, 'server1c')
+            def server1cPort = getParametrValue(buildEnv, 'server1c')
+            def agent1cPort = getParametrValue(buildEnv, 'agent1cPort') 
+            def platform1c = getParametrValue(buildEnv, 'platform1C') 
+            def serverSql = getParametrValue(buildEnv, 'serverSql')
+            def templatebases = getParametrValue(buildEnv, 'templatebases')
+            def storages1cPath = getParametrValue(buildEnv, 'storages1cPath')
+            def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')   
+            def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredential_ID')
+            def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
+            def sqlCredentialsID = getParametrValue(buildEnv, 'sqlCredentialsID')
         }
 
         stages{
@@ -31,7 +58,18 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            
+                            templatebasesList = utils.lineToArray(templatebases.toLowerCase())
+                            storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
+
+                            if (storages1cPathList.size() != 0) {
+                                assert storages1cPathList.size() == templatebasesList.size()
+                            }
+
+                            testbase = null
+
+                            dir ('build') {
+                                writeFile file:'dummy', text:''
+                            }
                         }
                     }
                 }
