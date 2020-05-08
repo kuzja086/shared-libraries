@@ -16,25 +16,25 @@ def call(Map buildEnv){
             label getParametrValue(buildEnv, 'agent')
         }
 
-        post { // Выполняется после сборки
-            // always {
-            //     script {
-            //         if (currentBuild.result == "ABORTED") {
-            //             return
-            //         }
+        // post { // Выполняется после сборки
+        //     // always {
+        //     //     script {
+        //     //         if (currentBuild.result == "ABORTED") {
+        //     //             return
+        //     //         }
 
-            //         dir ('build/out/allure') {
-            //             writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
-            //         }
+        //     //         dir ('build/out/allure') {
+        //     //             writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
+        //     //         }
 
-            //         allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
-            //     }
-            // }
-            // Варианты в документации
-            failure {
-               sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
-            }
-        }
+        //     //         allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
+        //     //     }
+        //     // }
+        //     // Варианты в документации
+        //     failure {
+        //        sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
+        //     }
+        // }
 
         environment {
             // Заполнить параметры для пайплайна
