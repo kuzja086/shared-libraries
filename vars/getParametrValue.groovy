@@ -37,8 +37,8 @@ def getDefaultParams(){
         'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension", // Путь к выгрузке файлов расширения
 
         // EDT
-        'edtVersion' : '2020.3',
-        'projectNameEDT' : 'projectNameEDT',
+        'edtVersion' : '2020.3', // Версия EDT
+        'projectNameEDT' : 'projectNameEDT', // Имя проекта в EDT
 
         // Тестирование
 

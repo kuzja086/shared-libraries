@@ -1,3 +1,15 @@
 @Library("shared-libraries")_
 
 makeCfFromEDT()
+
+// makeCfFromEDT(agent : "testserver")
+// Необходимые параметры, которые можно переопределить
+// EDT_VERSION   Версия EDT
+// TEMP_CATALOG  Служебный каталог
+// PROJECT_NAME  Название проекта в EDT
+// XMLPATH       Путь к выгрузке файлов конфигурации
+// PLATFORM1C    Версия платформы
+// CFPATH        Каталог для выгрузкки *.cf и *.cfe 
+// SAVEEXTENSIONINFILE  Сохранить расширение в файл *.cfe
+// EXTENSION    Имя расширения по умолчанию
+// XMLPATHEXTENSION Путь к выгрузке файлов расширения
