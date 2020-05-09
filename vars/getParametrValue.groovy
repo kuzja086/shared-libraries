@@ -29,6 +29,7 @@ def getDefaultParams(){
         'agent1cPort' : '2441', // Порт агента кластера 1с
         'infobase' : 'tempBase', // Имя базы на сервере
         'tempCatalog' : "${CURRENT_CATALOG}\\temp", // Служебный каталог
+        'serverCopyPath' : '\\\\sqlserver\\temp_for_1c$\\Kozynskiy\\jenkins',
         'platform1C' : '8.3.14.1779', //Версия платформы
         'serverSql' : 'testserver\\sqlexpress', // Адрес sql сервера
         'xmlPath' : "${CURRENT_CATALOG}\\xmlpath", // Путь к выгрузке файлов конфигурации

@@ -47,6 +47,7 @@ def call(Map buildEnv){
             def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredential_ID')
             def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
             def sqlCredentialsID = getParametrValue(buildEnv, 'sqlCredentialsID')
+            def serverCopyPath = getParametrValue(buildEnv, 'serverCopyPath') // * Обязательный
         }
 
         stages{
@@ -73,68 +74,27 @@ def call(Map buildEnv){
                     }
                 }
             }
-        }
-    }
-}
+            stage("Запуск") {
+                steps {
+                    timestamps {
+                        script {
+                            for (i = 0;  i < templatebasesList.size(); i++) {
+                                templateDb = templatebasesList[i]
+                                storage1cPath = storages1cPathList[i]
+                                testbase = "test_${templateDb}"
+                                templateDbConnString = getConnectionString(buildEnv)
+                                testbaseConnString = getConnectionString(buildEnv, testbase)
+                                backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
 
-
-def call(){
-    call([:])
-}
-
-// stages {
-//         stage("Подготовка") {
-//             steps {
-//                 timestamps {
-//                     script {
-//                         templatebasesList = utils.lineToArray(templatebases.toLowerCase())
-//                         storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
-
-//                         if (storages1cPathList.size() != 0) {
-//                             assert storages1cPathList.size() == templatebasesList.size()
-//                         }
-
-//                         server1c = server1c.isEmpty() ? "localhost" : server1c
-//                         serverSql = serverSql.isEmpty() ? "localhost" : serverSql
-//                         server1cPort = server1cPort.isEmpty() ? "1540" : server1cPort
-//                         agent1cPort = agent1cPort.isEmpty() ? "1541" : agent1cPort
-//                         env.sqlUser = sqlUser.isEmpty() ? "sa" : sqlUser
-//                         testbase = null
-// 						temppath = temppath.isEmpty() ? "C:\temp" : temppath
-
-//                         //projectHelpers.registerComponent()
-//                         // создаем пустые каталоги
-//                         dir ('build') {
-//                             writeFile file:'dummy', text:''
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//         stage("Запуск") {
-//             steps {
-//                 timestamps {
-//                     script {
-
-//                         for (i = 0;  i < templatebasesList.size(); i++) {
-//                             templateDb = templatebasesList[i]
-//                             storage1cPath = storages1cPathList[i]
-//                             testbase = "test_${templateDb}"
-// 							templateDbConnString = projectHelpers.getConnString(server1c, templateDb, agent1cPort)
-//                             testbaseConnString = projectHelpers.getConnString(server1c, testbase, agent1cPort)
-//                             backupPath = "${temppath}/temp_${templateDb}_${utils.currentDateStamp()}"
-
-//                             // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
-//                             dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
-//                                 server1c, 
-//                                 server1cPort, 
-//                                 serverSql, 
-//                                 testbase, 
-//                                 admin1cUser, 
-//                                 admin1cPwd,
-//                                 sqluser,
-//                                 sqlPwd
-//                             )
+                                // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
+                                dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
+                                    server1c, 
+                                    server1cPort, 
+                                    serverSql, 
+                                    testbase, 
+                                    base1CCredentialID, 
+                                    sqlCredentialsID
+                                )
 // 							// 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
 //                             updateDbTasks["updateTask_${templateDb}"] = updateDbTask(
 //                                 platform1c,
@@ -180,16 +140,26 @@ def call(){
 //                             )
 //                         }
 
-//                         parallel dropDbTasks
-// 						parallel updateDbTasks
+                        parallel dropDbTasks
+// 						   parallel updateDbTasks
 //                         parallel backupTasks
 //                         parallel restoreTasks
 //                         parallel createDbTasks
 //                         parallel runHandlers1cTasks
-//                     }
-//                 }
-//             }
-//         }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+def call(){
+    call([:])
+}
+
+
 //         stage("Тестирование ADD") {
 //             steps {
 //                 timestamps {
@@ -242,18 +212,15 @@ def call(){
 // }
 
 
-// def dropDbTask(server1c, server1cPort, serverSql, infobase, admin1cUser, admin1cPwd, sqluser, sqlPwd) {
-//     return {
-//         timestamps {
-//             stage("Удаление ${infobase}") {
-//                 def projectHelpers = new ProjectHelpers()
-//                 def utils = new Utils()
-
-//                 projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, admin1cUser, admin1cPwd, sqluser, sqlPwd)
-//             }
-//         }
-//     }
-// }
+def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
+    return {
+        timestamps {
+            stage("Удаление ${infobase}") {
+                projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, admin1cUser, admin1cPwd, sqluser, sqlPwd)
+            }
+        }
+    }
+}
 
 // def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
 //     return {

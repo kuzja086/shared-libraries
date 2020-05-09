@@ -1,9 +1,8 @@
-def getConnectionString(Map buildEnv) {
+def getConnectionString(Map buildEnv, String infobase) {
     def isFileBase   = getParametrValue(buildEnv, 'isFileBase')
     def fileBasePath = getParametrValue(buildEnv, 'fileBasePath')
     def server1c     = getParametrValue(buildEnv, 'server1c')
     def agent1cPort  = getParametrValue(buildEnv, 'agent1cPort')
-    def infobase     = getParametrValue(buildEnv, 'infobase')
 
     if(isFileBase.trim().equals("true")) {
        connectionString = "/F${fileBasePath}" 
@@ -14,7 +13,11 @@ def getConnectionString(Map buildEnv) {
     return connectionString
 }
 
-def cmd(String _command, String credentionalID){
+def getConnectionString(Map buildEnv) {
+    getConnectionString(buildEnv, getParametrValue(buildEnv, 'infobase'))
+}
+
+def getUserPasswordFromCredentials(String _command, String credentionalID){
     if(credentionalID.trim().isEmpty()){
         command = _command.replace("username", "")
         command = _command.replace("password", "")
@@ -25,7 +28,7 @@ def cmd(String _command, String credentionalID){
     command = _command.replace("username", USERNAME)
     command = _command.replace("password", PASSWORD)
 
-    cmd(command)
+    return command
 }
 
 def cmd(String _command){
@@ -53,4 +56,50 @@ def lineToArray(line, splitter = ",") {
         }
     }
     return cleanArray
+}
+
+// Возвращает Timestamp вида yyyyMMdddss
+//
+// Возвращаемое значение
+//  String - сгенерированный timestamp
+//
+def currentDateStamp() {
+    dateFormat = new SimpleDateFormat("yyyyMMdddss");
+    date = new Date();
+    return  dateFormat.format(date);
+}
+
+// Удаляет базу из кластера через powershell.
+//
+// Параметры:
+//  server1c - сервер 1с 
+//  agentPort - порт агента кластера 1с
+//  serverSql - сервер sql
+//  base - база для удаления из кластера
+//  admin1cUser - имя администратора 1С в кластере для базы
+//  admin1cPwd - пароль администратора 1С в кластере для базы
+//  sqluser - юзер sql
+//  sqlPwd - пароль sql
+//  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
+//
+def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
+    
+    fulldropLine = "";
+    if (fulldrop) {
+        fulldropLine = "-fulldrop true"
+    }
+
+    admin1cUserLine = "";
+    if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+        admin1cUserLine = "-user username -passw password"
+        getUserPasswordFromCredentials(admin1cUserLine, base1CCredentialID)
+    }
+
+    sqluserLine = "";
+    if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
+        sqluserLine = "-sqluser username -sqlPwd password"
+        getUserPasswordFromCredentials(sqluserLine, sqlCredentialsID)
+    }
+
+    cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
 }
