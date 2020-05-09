@@ -13,7 +13,7 @@ String call(Map buildParams, String keyName) {
             return defaultParam."${keyName}"
         }
         println "Значение для ключа ${keyName} не найдено. Возвращаем пустую строку."
-        return new String()
+        return new String("")
     }
 }
 
