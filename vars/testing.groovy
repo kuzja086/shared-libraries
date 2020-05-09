@@ -1,11 +1,3 @@
-def backupTasks = [:]
-def restoreTasks = [:]
-def dropDbTasks = [:]
-def createDbTasks = [:]
-def runHandlers1cTasks = [:]
-def updateDbTasks = [:]
-
-
 def call(Map buildEnv){
     pipeline {
         agent {
@@ -87,7 +79,7 @@ def call(Map buildEnv){
                                 backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
 
                                 // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
-                                dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
+                                dropDbTask(
                                     server1c, 
                                     server1cPort, 
                                     serverSql, 
@@ -170,13 +162,11 @@ def call(){
 
 
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
-    return {
         timestamps {
             stage("Удаление ${infobase}") {
                 utils.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
             }
         }
-    }
 }
 
 // def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
