@@ -35,3 +35,22 @@ def cmd(String _command){
         bat "chcp 65001\n${_command}"
     }
 }
+
+// Конвертирует строку в массив по сплиттеру
+//
+// Параметры:
+//  line - строка с разделителями
+//
+// Возвращаемое значение
+//  Array - массив строк
+//
+def lineToArray(line, splitter = ",") {
+    dirtArray = line.replaceAll("\\s", "").split(",")
+    cleanArray = []
+    for (item in dirtArray) {
+        if (!item.isEmpty()) {
+            cleanArray.add(item)
+        }
+    }
+    return cleanArray
+}
