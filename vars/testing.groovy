@@ -82,8 +82,8 @@ def call(Map buildEnv){
                                 templateDb = templatebasesList[i]
                                 storage1cPath = storages1cPathList[i]
                                 testbase = "test_${templateDb}"
-                                templateDbConnString = getConnectionString(buildEnv)
-                                testbaseConnString = getConnectionString(buildEnv, testbase)
+                                templateDbConnString = utils.getConnectionString(buildEnv)
+                                testbaseConnString = utils.getConnectionString(buildEnv, testbase)
                                 backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
 
                                 // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
