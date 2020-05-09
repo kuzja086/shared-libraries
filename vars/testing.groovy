@@ -41,7 +41,7 @@ def call(Map buildEnv){
             def agent1cPort = getParametrValue(buildEnv, 'agent1cPort') 
             def platform1c = getParametrValue(buildEnv, 'platform1C') 
             def serverSql = getParametrValue(buildEnv, 'serverSql')
-            def templatebases = getParametrValue(buildEnv, 'templatebases')
+            def templatebases = getParametrValue(buildEnv, 'templatebases') // *Обязательный
             def storages1cPath = getParametrValue(buildEnv, 'storages1cPath')
             def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')   
             def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredential_ID')
@@ -55,7 +55,10 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
-                            storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
+                            if (storages1cPath.trim().length() != 0){
+                                storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
+                            }
+                            
 
                             if (storages1cPathList.size() != 0) {
                                 assert storages1cPathList.size() == templatebasesList.size()
