@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat;
+
 def getConnectionString(Map buildEnv, String infobase) {
     def isFileBase   = getParametrValue(buildEnv, 'isFileBase')
     def fileBasePath = getParametrValue(buildEnv, 'fileBasePath')
