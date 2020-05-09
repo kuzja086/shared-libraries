@@ -55,7 +55,7 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
-                            if (storages1cPath.trim().length() != 0){
+                            if (storages1cPath != null && !storages1cPath.isEmpty()){
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
                             }
                             
