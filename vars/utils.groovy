@@ -25,11 +25,10 @@ def getUserPasswordFromCredentials(String _command, String credentionalID){
         command = _command.replace("password", "")
     }
 
-    withCredentials([usernamePassword(credentionalsId: "${credentionalID}", usernameVarible: 'USERNAME', passwordVarible: 'PASSWORD')])
-
-    command = _command.replace("username", USERNAME)
-    command = _command.replace("password", PASSWORD)
-
+    withCredentials([usernamePassword(credentionalsId: "${credentionalID}", usernameVarible: 'USERNAME', passwordVarible: 'PASSWORD')]){
+        command = _command.replace("username", USERNAME)
+        command = _command.replace("password", PASSWORD)
+    }
     return command
 }
 
