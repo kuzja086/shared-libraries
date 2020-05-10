@@ -86,7 +86,7 @@ def currentDateStamp() {
 //
 def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
      withCredentials([usernamePassword(credentionalsId: "${base1CCredentialID}", usernameVarible: 'USERNAME1C', passwordVarible: 'PASSWORD1C'),
-        usernamePassword(credentionalsId: "${sqlCredentialsID}", usernameVarible: 'USERNAMESQL', passwordVarible: 'USERNAMESQL')]){
+        usernamePassword(credentionalsId: "${sqlCredentialsID}", usernameVarible: 'USERNAMESQL', passwordVarible: 'PASSWORDSQL')]){
        
         fulldropLine = "";
         if (fulldrop) {
@@ -98,13 +98,17 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
             admin1cUserLine = "-user username -passw password"
             admin1cUserLine.replace("username", USERNAME1C)
             admin1cUserLine.replace("password", PASSWORD1C)
+            println USERNAME1C
+            println PASSWORD1C
         }
 
         sqluserLine = "";
         if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
             sqluserLine = "-sqluser username -sqlPwd password"
             sqluserLine.replace("username", USERNAMESQL)
-            sqluserLine.replace("password", USERNAMESQL)
+            sqluserLine.replace("password", PASSWORDSQL)
+            println USERNAMESQL
+            println PASSWORDSQL
         }
 
         cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
