@@ -85,8 +85,8 @@ def currentDateStamp() {
 //  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
 //
 def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
-     withCredentials([usernamePassword(credentionalsId: "${base1CCredentialID}", usernameVarible: 'USERNAME1C', passwordVarible: 'PASSWORD1C'),
-        usernamePassword(credentionalsId: "${sqlCredentialsID}", usernameVarible: 'USERNAMESQL', passwordVarible: 'PASSWORDSQL')]){
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVarible: 'USERNAME1C', passwordVarible: 'PASSWORD1C'),
+        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVarible: 'USERNAMESQL', passwordVarible: 'PASSWORDSQL')]){
        
         fulldropLine = "";
         if (fulldrop) {
@@ -98,8 +98,6 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
             admin1cUserLine = "-user username -passw password"
             admin1cUserLine.replace("username", USERNAME1C)
             admin1cUserLine.replace("password", PASSWORD1C)
-            println USERNAME1C
-            println PASSWORD1C
         }
 
         sqluserLine = "";
