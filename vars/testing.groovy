@@ -164,7 +164,7 @@ def call(){
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
         timestamps {
             stage("Удаление ${infobase}") {
-                utils.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredential, sqlCredentialsID)
+                utils.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
             }
         }
 }
