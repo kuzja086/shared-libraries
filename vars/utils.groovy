@@ -106,7 +106,6 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
             sqluserLine.replace("username", USERNAMESQL)
             sqluserLine.replace("password", PASSWORDSQL)
         }
-
-        cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
     }
+    cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
 }

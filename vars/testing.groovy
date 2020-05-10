@@ -29,7 +29,7 @@ def call(Map buildEnv){
             // TODO Добавить обязательные или нет с комментариями
             def CURRENT_CATALOG  = pwd()
             def server1c = getParametrValue(buildEnv, 'server1c')
-            def server1cPort = getParametrValue(buildEnv, 'server1c')
+            def server1cPort = getParametrValue(buildEnv, 'server1cPort')
             def agent1cPort = getParametrValue(buildEnv, 'agent1cPort') 
             def platform1c = getParametrValue(buildEnv, 'platform1C') 
             def serverSql = getParametrValue(buildEnv, 'serverSql')
