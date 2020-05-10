@@ -19,17 +19,18 @@ def getConnectionString(Map buildEnv) {
     getConnectionString(buildEnv, getParametrValue(buildEnv, 'infobase'))
 }
 
-def getUserPasswordFromCredentials(String _command, String credentionalID){
+def cmd(String _command, String credentionalID){
     if(credentionalID.trim().isEmpty()){
         command = _command.replace("username", "")
         command = _command.replace("password", "")
     }
 
     withCredentials([usernamePassword(credentionalsId: "${credentionalID}", usernameVarible: 'USERNAME', passwordVarible: 'PASSWORD')]){
-        command = _command.replace("username", ${USERNAME})
-        command = _command.replace("password", ${PASSWORD})
+        command = _command.replace("username", USERNAME)
+        command = _command.replace("password", PASSWORD)
+
+        cmd(command)
     }
-    return command
 }
 
 def cmd(String _command){
@@ -84,7 +85,8 @@ def currentDateStamp() {
 //  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
 //
 def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
-    
+     withCredentials([usernamePassword(credentionalsId: "${base1CCredentialID}", usernameVarible: 'USERNAME1C', passwordVarible: 'PASSWORD1C'),
+        usernamePassword(credentionalsId: "${sqlCredentialsID}", usernameVarible: 'USERNAMESQL', passwordVarible: 'USERNAMESQL')]){
     fulldropLine = "";
     if (fulldrop) {
         fulldropLine = "-fulldrop true"
@@ -93,13 +95,15 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
     admin1cUserLine = "";
     if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
         admin1cUserLine = "-user username -passw password"
-        getUserPasswordFromCredentials(admin1cUserLine, base1CCredentialID)
+        admin1cUserLine.replace("username", USERNAME1C)
+        admin1cUserLine.replace("password", PASSWORD1C)
     }
 
     sqluserLine = "";
     if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
         sqluserLine = "-sqluser username -sqlPwd password"
-        getUserPasswordFromCredentials(sqluserLine, sqlCredentialsID)
+        sqluserLine.replace("username", USERNAMESQL)
+        sqluserLine.replace("password", USERNAMESQL)
     }
 
     cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")

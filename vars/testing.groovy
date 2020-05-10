@@ -36,7 +36,7 @@ def call(Map buildEnv){
             def templatebases = getParametrValue(buildEnv, 'templatebases') // *Обязательный
             def storages1cPath = getParametrValue(buildEnv, 'storages1cPath')
             def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')   
-            def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredential_ID')
+            def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredentialID')
             def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
             def sqlCredentialsID = getParametrValue(buildEnv, 'sqlCredentialsID')
             def serverCopyPath = getParametrValue(buildEnv, 'serverCopyPath') // * Обязательный
@@ -83,9 +83,7 @@ def call(Map buildEnv){
                                     server1c, 
                                     server1cPort, 
                                     serverSql, 
-                                    testbase, 
-                                    base1CCredentialID, 
-                                    sqlCredentialsID
+                                    testbase
                                 )
                             }
 
@@ -164,7 +162,7 @@ def call(){
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
         timestamps {
             stage("Удаление ${infobase}") {
-                utils.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
+                utils.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredential, sqlCredentialsID)
             }
         }
 }
