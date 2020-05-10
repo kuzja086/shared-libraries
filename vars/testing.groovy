@@ -83,7 +83,9 @@ def call(Map buildEnv){
                                     server1c, 
                                     server1cPort, 
                                     serverSql, 
-                                    testbase
+                                    testbase,
+                                    base1CCredentialID,
+                                    sqlCredentialsID
                                 )
                             }
 
