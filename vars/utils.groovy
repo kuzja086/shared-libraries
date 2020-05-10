@@ -96,15 +96,15 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
         admin1cUserLine = "";
         if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
             admin1cUserLine = "-user username -passw password"
-            admin1cUserLine.replace("username", USERNAME1C)
-            admin1cUserLine.replace("password", PASSWORD1C)
+            admin1cUserLine = admin1cUserLine.replace("username", USERNAME1C)
+            admin1cUserLine = admin1cUserLine.replace("password", PASSWORD1C)
         }
 
         sqluserLine = "";
         if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
             sqluserLine = "-sqluser username -sqlPwd password"
-            sqluserLine.replace("username", USERNAMESQL)
-            sqluserLine.replace("password", PASSWORDSQL)
+            sqluserLine = sqluserLine.replace("username", USERNAMESQL)
+            sqluserLine = sqluserLine.replace("password", PASSWORDSQL)
         }
     }
     cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
