@@ -24,8 +24,8 @@ def cmd(String _command, String credentionalID){
         command = _command.replace("username", "")
         command = _command.replace("password", "")
     }
-
-    withCredentials([usernamePassword(credentionalsId: "${credentionalID}", usernameVarible: 'USERNAME', passwordVarible: 'PASSWORD')]){
+    
+    withCredentials([usernamePassword(credentialsId: "${credentionalID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
         command = _command.replace("username", USERNAME)
         command = _command.replace("password", PASSWORD)
 
@@ -85,8 +85,8 @@ def currentDateStamp() {
 //  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
 //
 def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
-    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVarible: 'USERNAME1C', passwordVarible: 'PASSWORD1C'),
-        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVarible: 'USERNAMESQL', passwordVarible: 'PASSWORDSQL')]){
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAME1C', passwordVariable: 'PASSWORD1C'),
+        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
        
         fulldropLine = "";
         if (fulldrop) {
@@ -105,8 +105,6 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
             sqluserLine = "-sqluser username -sqlPwd password"
             sqluserLine.replace("username", USERNAMESQL)
             sqluserLine.replace("password", PASSWORDSQL)
-            println USERNAMESQL
-            println PASSWORDSQL
         }
 
         cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
