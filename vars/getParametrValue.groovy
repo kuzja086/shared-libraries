@@ -31,7 +31,7 @@ def getDefaultParams(){
         'tempCatalog' : "${CURRENT_CATALOG}\\temp", // Служебный каталог
         'serverCopyPath' : '\\\\sqlserver\\temp_for_1c$\\Kozynskiy\\jenkins',
         'platform1C' : '8.3.14.1779', //Версия платформы
-        'serverSql' : 'testserver\\sqlexpress', // Адрес sql сервера
+        'serverSql' : 'sqlserver\\sqlexpress', // Адрес sql сервера
         'xmlPath' : "${CURRENT_CATALOG}\\xmlpath", // Путь к выгрузке файлов конфигурации
         'cfPath' : "${CURRENT_CATALOG}\\build", // Каталог для выгрузкки *.cf и *.cfe
         'emailForNotification' : 'kozs@tlink.ru', // Email для отправки результатов сборки
