@@ -58,7 +58,7 @@ def backupDb(dbServer, infobase, backupPath, sqlCredentialsID) {
 //  infobase - имя базы на сервере БД
 //  sqlCredentialsID - CredentialsID для sql сервера
 //
-def createEmptyDb(dbServer, infobase, sqlUser, sqlPwd) {
+def createEmptyDb(dbServer, infobase, sqlCredentialsID) {
     withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
         utils = new Utils()
 
@@ -85,7 +85,7 @@ def createEmptyDb(dbServer, infobase, sqlUser, sqlPwd) {
 //  backupPath - каталог бекапов
 //  sqlCredentialsID - CredentialsID для sql сервера
 //
-def restoreDb(dbServer, infobase, backupPath, sqlUser, sqlPwd) {
+def restoreDb(dbServer, infobase, backupPath, sqlCredentialsID) {
     withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
         utils = new Utils()
 
