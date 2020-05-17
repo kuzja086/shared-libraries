@@ -2,6 +2,12 @@ import io.libs.SqlUtils
 import io.libs.ProjectHelpers
 import io.libs.Utils
 
+def backupTasks = [:]
+def updateDbTasks = [:]
+def dropDbTasks = [:]
+def createDbTasks = [:]
+def runHandlers1cTasks = [:]
+
 def call(Map buildEnv){
     pipeline {
         agent {
@@ -67,13 +73,6 @@ def call(Map buildEnv){
                             dir ('build') {
                                 writeFile file:'dummy', text:''
                             }
-
-                            def backupTasks = [:]
-                            def updateDbTasks = [:]
-                            def restoreTasks = [:]
-                            def dropDbTasks = [:]
-                            def createDbTasks = [:]
-                            def runHandlers1cTasks = [:]
                         }
                     }
                 }
