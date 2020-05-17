@@ -119,7 +119,7 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
 
 def loadCfgFrom1CStorage(storageTCP, storages1cCredentalsID, connString, base1CCredentialID) {
      withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'),
-        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESTORAGE', passwordVariable: 'PASSWORDSTORAGE')]){
+        usernamePassword(credentialsId: "${storages1cCredentalsID}", usernameVariable: 'USERNAMESTORAGE', passwordVariable: 'PASSWORDSTORAGE')]){
         utils = new Utils()
 
         storageAuth = ""
@@ -149,27 +149,27 @@ def loadCfgFrom1CStorage(storageTCP, storages1cCredentalsID, connString, base1CC
 //
 //  connString - строка соединения, например /Sdevadapter\template_adapter_adapter
 //  platform - полный номер платформы 1с
-//  admin1cUser - администратор базы
-//  admin1cPassword - пароль администратора базы
+//  base1CCredentialID - CredentialsID Для базы 1С
 //
-def updateInfobase(connString, admin1cUser, admin1cPassword, platform) {
+def updateInfobase(connString, base1CCredentialID, platform) {
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')){
+        utils = new Utils()
 
-    utils = new Utils()
-    admin1cUserLine = "";
-    if (!admin1cUser.isEmpty()) {
-        admin1cUserLine = "--db-user ${admin1cUser}"
-    }
-    admin1cPassLine = "";
-    if (!admin1cPassword.isEmpty()) {
-        admin1cPassLine = "--db-pwd ${admin1cPassword}"
-    }
-    platformLine = ""
-    if (platform != null && !platform.isEmpty()) {
-        platformLine = "--v8version ${platform}"
-    }
+        baseAuth = "";
+        if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+            admin1cUserLine = "--db-user username --db-pwd password"
+            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
+            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+        }
 
-    returnCode = utils.cmd("runner updatedb --ibconnection ${connString} ${admin1cUserLine} ${admin1cPassLine} ${platformLine}")
-    if (returnCode != 0) {
-        utils.raiseError("Обновление базы ${connString} в режиме конфигуратора завершилось с ошибкой. Для дополнительной информации смотрите логи")
-    }
+        platformLine = ""
+        if (platform != null && !platform.isEmpty()) {
+            platformLine = "--v8version ${platform}"
+        }
+
+        returnCode = utils.cmd("runner updatedb --ibconnection ${connString} ${baseAuth} ${platformLine}")
+        if (returnCode != 0) {
+            utils.raiseError("Обновление базы ${connString} в режиме конфигуратора завершилось с ошибкой. Для дополнительной информации смотрите логи")
+        }
+    }    
 }

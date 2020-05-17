@@ -9,22 +9,22 @@ def call(Map buildEnv){
         }
 
         // post { // Выполняется после сборки
-        //     // always {
-        //     //     script {
-        //     //         if (currentBuild.result == "ABORTED") {
-        //     //             return
-        //     //         }
+        //     always {
+        //         script {
+        //             if (currentBuild.result == "ABORTED") {
+        //                 return
+        //             }
 
-        //     //         dir ('build/out/allure') {
-        //     //             writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
-        //     //         }
+        //             dir ('build/out/allure') {
+        //                 writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
+        //             }
 
-        //     //         allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
-        //     //     }
-        //     // }
+        //             allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
+        //         }
+        //     }
         //     // Варианты в документации
         //     failure {
-        //        sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
+        //        sendEmailMessage("Failed", getParametrValue(buildEnv, 'emailForNotification')) // Научиться отправлять почту и добавить условие истина
         //     }
         // }
 
@@ -99,18 +99,17 @@ def call(Map buildEnv){
                                     base1CCredentialID
                                 )
 
-                                //  // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
-                                // backupTask(
-                                //     serverSql, 
-                                //     templateDb, 
-                                //     backupPath,
-                                //     sqlUser,
-                                //     sqlPwd
-                                // )
+                                 // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
+                                backupTask(
+                                    serverSql, 
+                                    templateDb, 
+                                    backupPath,
+                                    sqlCredentialsID
+                                )
                             }
 
                             // parallel dropDbTasks 
-						    parallel updateDbTasks
+						    //parallel updateDbTasks
                         // parallel backupTasks
 //                         parallel restoreTasks
 //                         parallel createDbTasks
@@ -163,27 +162,13 @@ def call(){
 //             }
 //         }
 //     }   
-//     post {
-//         always {
-//             script {
-//                 if (currentBuild.result == "ABORTED") {
-//                     return
-//                 }
-
-//                 dir ('build/out/allure') {
-//                     writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
-//                 }
-
-//                 allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
-//             }
-//         }
-//     }
+//     
 // }
 
 
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
-    timestamps {
-        stage("Удаление ${infobase}") {
+    stage("Удаление ${infobase}") {
+        timestamps {
             def projectHelpers = new ProjectHelpers()
             projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
         }
@@ -204,6 +189,17 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
     }
 }
 
+def backupTask(serverSql, infobase, backupPath, sqlCredentialsID) {
+    stage("sql бекап ${infobase}") {
+        timestamps {
+            def sqlUtils = new SqlUtils()
+
+            sqlUtils.checkDb(serverSql, infobase, sqlCredentialsID)
+            sqlUtils.backupDb(serverSql, infobase, backupPath, sqlCredentialsID)
+        }
+    }
+}
+
 // def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
 //     return {
 //         stage("Создание базы ${infobase}") {
@@ -214,19 +210,6 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
 //                 } catch (excp) {
 //                     echo "Error happened when creating base ${infobase}. Probably base already exists in the ibases.v8i list. Skip the error"
 //                 }
-//             }
-//         }
-//     }
-// }
-
-// def backupTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
-//     return {
-//         stage("sql бекап ${infobase}") {
-//             timestamps {
-//                 def sqlUtils = new SqlUtils()
-
-//                 sqlUtils.checkDb(serverSql, infobase, sqlUser, sqlPwd)
-//                 sqlUtils.backupDb(serverSql, infobase, backupPath, sqlUser, sqlPwd)
 //             }
 //         }
 //     }
