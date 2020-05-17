@@ -94,7 +94,7 @@ def call(Map buildEnv){
                                 )
 
                                 // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
-                                updateDbTasks["updateTask_${templateDb}"] = updateDbTask(
+                                updateDbTask(
                                     platform1c,
                                     templateDb, 
                                     storage1cPath, 
@@ -198,13 +198,14 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
     return {
         stage("Загрузка из хранилища ${infobase}") {
             timestamps {
+                prHelpers = new ProjectHelpers()
                 if (storage1cPath == null || storage1cPath.isEmpty()
                     || storages1cCredentalsID == null || storages1cCredentalsID.isEmpty()) {
                     return
                 }
-                prHelpers = new ProjectHelpers()
-                // prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd, platform1c)
-                // prHelpers.updateInfobase(connString, admin1cUser, admin1cPwd, platform1c)
+                
+                prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
+                prHelpers.updateInfobase(connString, base1CCredentialID, platform1c)
             }
         }
     }

@@ -111,24 +111,35 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
 //  т.к. это даст буст по скорости загрузки.
 //
 // Параметры:
+//  storageTCP - Адрес хранилища
+//  storages1cCredentalsID - CredentialsID для Хранилища
+//  connString - Строка подключения к базе
+//  base1CCredentialID - CredentialsID Для базы 1С
 //
-//
-def loadCfgFrom1CStorage(storageTCP, storageUser, storagePwd, connString, admin1cUser, admin1cPassword, platform) {
-    utils = new Utils()
 
-    storagePwdLine = ""
-    if (storagePwd != null && !storagePwd.isEmpty()) {
-        storagePwdLine = "--storage-pwd ${storagePwd}"
-    }
+def loadCfgFrom1CStorage(storageTCP, storages1cCredentalsID, connString, base1CCredentialID) {
+     withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'),
+        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESTORAGE', passwordVariable: 'PASSWORDSTORAGE')]){
+        utils = new Utils()
 
-    platformLine = ""
-   // if (platform != null && !platform.isEmpty()) {
-    //    platformLine = "--v8version ${platform}"
-   // }
+        storageAuth = ""
+        if (storages1cCredentalsID != null && !storages1cCredentalsID.isEmpty()) {
+            storageAuth = "--storage-user username --storage-pwd password"
+            storageAuth = storageAuth.replace("username", USERNAMESTORAGE)
+            storageAuth = storageAuth.replace("password", PASSWORDSTORAGE)
+        }
 
-    returnCode = utils.cmd("runner loadrepo --storage-name ${storageTCP} --storage-user ${storageUser} ${storagePwdLine} --ibconnection ${connString} --db-user ${admin1cUser} --db-pwd ${admin1cPassword} ${platformLine}")
-    if (returnCode != 0) {
-         utils.raiseError("Загрузка конфигурации из 1С хранилища  ${storageTCP} завершилась с ошибкой. Для подробностей смотрите логи.")
+        baseAuth = "";
+        if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+            admin1cUserLine = "--db-user username --db-pwd password"
+            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
+            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+        }
+
+        returnCode = utils.cmd("runner loadrepo --storage-name ${storageTCP}  ${storageAuth} --ibconnection ${connString} ${baseAuth}")
+        if (returnCode != 0) {
+            utils.raiseError("Загрузка конфигурации из 1С хранилища  ${storageTCP} завершилась с ошибкой. Для подробностей смотрите логи.")
+        }
     }
 }
 
