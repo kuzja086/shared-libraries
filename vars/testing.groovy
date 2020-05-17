@@ -53,8 +53,6 @@ def call(Map buildEnv){
                         script {
                             // TODO получение инструментов из гит
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
-                            def storages1cPathList = [:]
-                            if (!storages1cPath.trim().equals('null')){
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
                                 if (storages1cPathList.size() != 0) {
                                     assert storages1cPathList.size() == templatebasesList.size()
@@ -197,11 +195,7 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
     stage("Загрузка из хранилища ${infobase}") {
         timestamps {
             prHelpers = new ProjectHelpers()
-            println storage1cPath == null
-            println storage1cPath.isEmpty()
-            println storage1cPath == 'null'
-            println storage1cPath == "null"
-            if (storage1cPath == null || storage1cPath.isEmpty()) {
+            if (storage1cPath.trim().equals("null")) {
                 return
             }
             
