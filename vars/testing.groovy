@@ -119,14 +119,14 @@ def call(Map buildEnv){
                                 //     sqlPwd
                                 // )
                             }
-
+                        }
+                        
                         parallel dropDbTasks 
 						parallel updateDbTasks
                         // parallel backupTasks
 //                         parallel restoreTasks
 //                         parallel createDbTasks
 //                         parallel runHandlers1cTasks
-                        }
                     }
                 }
             }
