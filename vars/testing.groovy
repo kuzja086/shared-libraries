@@ -198,7 +198,12 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
     stage("Загрузка из хранилища ${infobase}") {
         timestamps {
             prHelpers = new ProjectHelpers()
+            println storage1cPath != null
+            println !storage1cPath.isEmpty()
+            println storages1cCredentalsID != null
+            println !storages1cCredentalsID.isEmpty()
             println storage1cPath
+            println storages1cCredentalsID
             if (storage1cPath != null && !storage1cPath.isEmpty()
                 && storages1cCredentalsID != null && !storages1cCredentalsID.isEmpty()) {
                 prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
