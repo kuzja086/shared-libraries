@@ -8,7 +8,7 @@ package io.libs;
 //  sqlCredentialsID - CredentialsID для sql сервера
 //
 def checkDb(dbServer, infobase, sqlCredentialsID) {
-    withCredentials([usernamePassword(usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL'))]){
+    withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
         utils = new Utils()
 
         sqlAuth = "" 
@@ -34,7 +34,7 @@ def checkDb(dbServer, infobase, sqlCredentialsID) {
 //  sqlCredentialsID - CredentialsID для sql сервера
 //
 def backupDb(dbServer, infobase, backupPath, sqlCredentialsID) {
-    withCredentials([usernamePassword(usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL'))]){
+    withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
         utils = new Utils()
 
         sqlAuth = "" 

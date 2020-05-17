@@ -152,7 +152,7 @@ def loadCfgFrom1CStorage(storageTCP, storages1cCredentalsID, connString, base1CC
 //  base1CCredentialID - CredentialsID Для базы 1С
 //
 def updateInfobase(connString, base1CCredentialID, platform) {
-    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')){
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
         utils = new Utils()
 
         baseAuth = "";
