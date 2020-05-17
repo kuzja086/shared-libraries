@@ -2,12 +2,6 @@ import io.libs.SqlUtils
 import io.libs.ProjectHelpers
 import io.libs.Utils
 
-def backupTasks = [:]
-def updateDbTasks = [:]
-def dropDbTasks = [:]
-def createDbTasks = [:]
-def runHandlers1cTasks = [:]
-
 def call(Map buildEnv){
     pipeline {
         agent {
@@ -90,7 +84,7 @@ def call(Map buildEnv){
                                 backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
 
                                 // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
-                                dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
+                                dropDbTask(
                                     server1c, 
                                     server1cPort, 
                                     serverSql, 
@@ -100,7 +94,7 @@ def call(Map buildEnv){
                                 )
 
                                 // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
-                                updateDbTasks["updateTask_${templateDb}"] = updateDbTask(
+                                updateDbTask(
                                     platform1c,
                                     templateDb, 
                                     storage1cPath, 
@@ -119,7 +113,7 @@ def call(Map buildEnv){
                                 // )
                             }
 
-                            parallel dropDbTasks 
+                            // parallel dropDbTasks 
 						    parallel updateDbTasks
                         // parallel backupTasks
 //                         parallel restoreTasks
@@ -192,29 +186,25 @@ def call(){
 
 
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
-    return {
-        timestamps {
-            stage("Удаление ${infobase}") {
-                def projectHelpers = new ProjectHelpers()
-                projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
-            }
+    timestamps {
+        stage("Удаление ${infobase}") {
+            def projectHelpers = new ProjectHelpers()
+            projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
         }
     }
 }
 
 def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, connString, base1CCredentialID) {
-    return {
-        stage("Загрузка из хранилища ${infobase}") {
-            timestamps {
-                prHelpers = new ProjectHelpers()
-                if (storage1cPath == null || storage1cPath.isEmpty()
-                    || storages1cCredentalsID == null || storages1cCredentalsID.isEmpty()) {
-                    return
-                }
-                
-                prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
-                prHelpers.updateInfobase(connString, base1CCredentialID, platform1c)
+    stage("Загрузка из хранилища ${infobase}") {
+        timestamps {
+            prHelpers = new ProjectHelpers()
+            if (storage1cPath == null || storage1cPath.isEmpty()
+                || storages1cCredentalsID == null || storages1cCredentalsID.isEmpty()) {
+                return
             }
+                
+            prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
+            prHelpers.updateInfobase(connString, base1CCredentialID, platform1c)
         }
     }
 }
