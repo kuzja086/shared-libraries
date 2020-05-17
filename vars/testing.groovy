@@ -120,7 +120,7 @@ def call(Map buildEnv){
                                 // )
                             }
 
-                        parallel dropDbTasks
+                        parallel dropDbTasks 
 						parallel updateDbTasks
                         // parallel backupTasks
 //                         parallel restoreTasks
