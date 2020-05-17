@@ -201,7 +201,8 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
             prHelpers = new ProjectHelpers()
             println storage1cPath == null
             println storage1cPath.isEmpty()
-            println storage1cPath
+            println storage1cPath == 'null'
+            println storage1cPath == "null"
             if (storage1cPath == null || storage1cPath.isEmpty()) {
                 return
             }
