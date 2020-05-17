@@ -29,16 +29,21 @@ def cmd(String _command, String credentionalID){
         command = _command.replace("username", USERNAME)
         command = _command.replace("password", PASSWORD)
 
-        cmd(command)
+        def returnCode = 0
+        returnCode = cmd(command)
+
+        return returnCode
     }
 }
 
 def cmd(String _command){
+    def returnCode = 0
     if (isUnix()){
-        sh "${_command}"
+        returnCode = sh script: "${_command}", returnStatus: true
     }else {
-        bat "chcp 65001\n${_command}"
+        returnCode =  bat script: "chcp 65001\n${command}", returnStatus: true
     }
+    return returnCode
 }
 
 // Конвертирует строку в массив по сплиттеру
