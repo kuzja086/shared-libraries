@@ -83,8 +83,15 @@ def call(Map buildEnv){
                                 testbaseConnString = utils.getConnectionString(buildEnv, testbase)
                                 backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
 
+                                def backupTasks = [:]
+                                def updateDbTasks = [:]
+                                def restoreTasks = [:]
+                                def dropDbTasks = [:]
+                                // def createDbTasks = [:]
+                                // def runHandlers1cTasks = [:]
+
                                 // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
-                                dropDbTask(
+                                dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
                                     server1c, 
                                     server1cPort, 
                                     serverSql, 
@@ -94,7 +101,7 @@ def call(Map buildEnv){
                                 )
 
                                 // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
-                                updateDbTask(
+                                updateDbTasks["updateTask_${templateDb}"] = updateDbTask(
                                     platform1c,
                                     templateDb, 
                                     storage1cPath, 
@@ -104,7 +111,7 @@ def call(Map buildEnv){
                                 )
 
                                 //  // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
-                                // backupTasks["backupTask_${templateDb}"] = backupTask(
+                                // backupTask(
                                 //     serverSql, 
                                 //     templateDb, 
                                 //     backupPath,
