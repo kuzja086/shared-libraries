@@ -76,3 +76,4 @@ def currentDateStamp() {
     return  dateFormat.format(date);
 }
 
+def call(){}
