@@ -199,7 +199,7 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
                     || storages1cCredentalsID == null || storages1cCredentalsID.isEmpty()) {
                     return
                 }
-                prHelpers = new ProjectHelpers()
+                prHelpers = new Utils()
                 // prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd, platform1c)
                 // prHelpers.updateInfobase(connString, admin1cUser, admin1cPwd, platform1c)
             }
