@@ -46,52 +46,46 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
 // Параметры:
 //
 //
-def loadCfgFrom1CStorage(storageTCP, storageUser, storagePwd, connString, admin1cUser, admin1cPassword, platform) {
-    utils = new Utils()
+// def loadCfgFrom1CStorage(storageTCP, storageUser, storagePwd, connString, admin1cUser, admin1cPassword) {
 
-    storagePwdLine = ""
-    if (storagePwd != null && !storagePwd.isEmpty()) {
-        storagePwdLine = "--storage-pwd ${storagePwd}"
-    }
+//     storagePwdLine = ""
+//     if (storagePwd != null && !storagePwd.isEmpty()) {
+//         storagePwdLine = "--storage-pwd ${storagePwd}"
+//     }
 
-    platformLine = ""
-   // if (platform != null && !platform.isEmpty()) {
-    //    platformLine = "--v8version ${platform}"
-   // }
+//     platformLine = ""
 
-    returnCode = utils.cmd("runner loadrepo --storage-name ${storageTCP} --storage-user ${storageUser} ${storagePwdLine} --ibconnection ${connString} --db-user ${admin1cUser} --db-pwd ${admin1cPassword} ${platformLine}")
-    if (returnCode != 0) {
-         utils.raiseError("Загрузка конфигурации из 1С хранилища  ${storageTCP} завершилась с ошибкой. Для подробностей смотрите логи.")
-    }
-}
+//     returnCode = utils.cmd("runner loadrepo --storage-name ${storageTCP} --storage-user ${storageUser} ${storagePwdLine} --ibconnection ${connString} --db-user ${admin1cUser} --db-pwd ${admin1cPassword}")
+//     if (returnCode != 0) {
+//          utils.raiseError("Загрузка конфигурации из 1С хранилища  ${storageTCP} завершилась с ошибкой. Для подробностей смотрите логи.")
+//     }
+// }
 
-// Обновляет базу в режиме конфигуратора. Аналог нажатия кнопки f7
-//
-// Параметры:
-//
-//  connString - строка соединения, например /Sdevadapter\template_adapter_adapter
-//  platform - полный номер платформы 1с
-//  admin1cUser - администратор базы
-//  admin1cPassword - пароль администратора базы
-//
-def updateInfobase(connString, admin1cUser, admin1cPassword, platform) {
+// // Обновляет базу в режиме конфигуратора. Аналог нажатия кнопки f7
+// //
+// // Параметры:
+// //
+// //  connString - строка соединения, например /Sdevadapter\template_adapter_adapter
+// //  platform - полный номер платформы 1с
+// //  admin1cUser - администратор базы
+// //  admin1cPassword - пароль администратора базы
+// //
+// def updateInfobase(connString, admin1cUser, admin1cPassword, platform) {
+//     admin1cUserLine = "";
+//     if (!admin1cUser.isEmpty()) {
+//         admin1cUserLine = "--db-user ${admin1cUser}"
+//     }
+//     admin1cPassLine = "";
+//     if (!admin1cPassword.isEmpty()) {
+//         admin1cPassLine = "--db-pwd ${admin1cPassword}"
+//     }
+//     platformLine = ""
+//     if (platform != null && !platform.isEmpty()) {
+//         platformLine = "--v8version ${platform}"
+//     }
 
-    utils = new Utils()
-    admin1cUserLine = "";
-    if (!admin1cUser.isEmpty()) {
-        admin1cUserLine = "--db-user ${admin1cUser}"
-    }
-    admin1cPassLine = "";
-    if (!admin1cPassword.isEmpty()) {
-        admin1cPassLine = "--db-pwd ${admin1cPassword}"
-    }
-    platformLine = ""
-    if (platform != null && !platform.isEmpty()) {
-        platformLine = "--v8version ${platform}"
-    }
-
-    returnCode = utils.cmd("runner updatedb --ibconnection ${connString} ${admin1cUserLine} ${admin1cPassLine} ${platformLine}")
-    if (returnCode != 0) {
-        utils.raiseError("Обновление базы ${connString} в режиме конфигуратора завершилось с ошибкой. Для дополнительной информации смотрите логи")
-    }
-}
+//     returnCode = utils.cmd("runner updatedb --ibconnection ${connString} ${admin1cUserLine} ${admin1cPassLine} ${platformLine}")
+//     if (returnCode != 0) {
+//         utils.raiseError("Обновление базы ${connString} в режиме конфигуратора завершилось с ошибкой. Для дополнительной информации смотрите логи")
+//     }
+// }
