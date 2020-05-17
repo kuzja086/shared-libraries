@@ -199,14 +199,11 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
         timestamps {
             prHelpers = new ProjectHelpers()
             println storage1cPath
-            if (storage1cPath == null || storage1cPath.isEmpty()) {
-                println 'a'
-                return
-                println 'b'
+            if (storage1cPath != null && !storage1cPath.isEmpty()
+                && storages1cCredentalsID != null && !storages1cCredentalsID.isEmpty()) {
+                prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
+                prHelpers.updateInfobase(connString, base1CCredentialID, platform1c)
             }
-                
-            prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
-            prHelpers.updateInfobase(connString, base1CCredentialID, platform1c)
         }
     }
 }
