@@ -67,6 +67,13 @@ def call(Map buildEnv){
                             dir ('build') {
                                 writeFile file:'dummy', text:''
                             }
+
+                            def backupTasks = [:]
+                            def updateDbTasks = [:]
+                            def restoreTasks = [:]
+                            def dropDbTasks = [:]
+                            def createDbTasks = [:]
+                            def runHandlers1cTasks = [:]
                         }
                     }
                 }
@@ -82,13 +89,6 @@ def call(Map buildEnv){
                                 templateDbConnString = utils.getConnectionString(buildEnv)
                                 testbaseConnString = utils.getConnectionString(buildEnv, testbase)
                                 backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
-
-                                def backupTasks = [:]
-                                def updateDbTasks = [:]
-                                def restoreTasks = [:]
-                                def dropDbTasks = [:]
-                                // def createDbTasks = [:]
-                                // def runHandlers1cTasks = [:]
 
                                 // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
                                 dropDbTasks["dropDbTask_${testbase}"] = dropDbTask(
@@ -119,14 +119,14 @@ def call(Map buildEnv){
                                 //     sqlPwd
                                 // )
                             }
-                        }
-                        
-                        parallel dropDbTasks 
-						parallel updateDbTasks
+
+                            parallel dropDbTasks 
+						    parallel updateDbTasks
                         // parallel backupTasks
 //                         parallel restoreTasks
 //                         parallel createDbTasks
 //                         parallel runHandlers1cTasks
+                        }
                     }
                 }
             }
