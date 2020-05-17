@@ -106,6 +106,29 @@ def call(Map buildEnv){
                                     backupPath,
                                     sqlCredentialsID
                                 )
+                                // 4. Загружаем sql бекап эталонной базы в тестовую
+                                restoreTask(
+                                    serverSql, 
+                                    testbase, 
+                                    backupPath,
+                                    sqlCredentialsID
+                                )
+                            // // 5. Создаем тестовую базу кластере 1С
+                            // createDbTasks["createDbTask_${testbase}"] = createDbTask(
+                            //     "${server1c}:${agent1cPort}",
+                            //     serverSql,
+                            //     platform1c,
+                            //     testbase,
+							// 	sqlUser,
+                            //     sqlPwd
+                            // )
+                            // // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
+                            // runHandlers1cTasks["runHandlers1cTask_${testbase}"] = runHandlers1cTask(
+                            //     testbase, 
+                            //     admin1cUser, 
+                            //     admin1cPwd,
+                            //     testbaseConnString
+                            // )
                             }
 
                             // parallel dropDbTasks 
@@ -200,6 +223,23 @@ def backupTask(serverSql, infobase, backupPath, sqlCredentialsID) {
     }
 }
 
+def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
+    stage("Востановление ${infobase} бекапа") {
+            timestamps {
+            sqlUtils = new SqlUtils()
+            utils = new Utils()
+
+            sqlUtils.createEmptyDb(serverSql, infobase, sqlCredentialsID)
+            sqlUtils.restoreDb(serverSql, infobase, backupPath, sqlCredentialsID)
+
+			returnCode = utils.cmd("oscript one_script_tools/deleteFile.os -file ${backupPath}")
+			if (returnCode != 0) {
+				utils.raiseError("Возникла ошибка при удалении файла ${backupPath}")
+			}
+        }
+    }
+}
+
 // def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
 //     return {
 //         stage("Создание базы ${infobase}") {
@@ -210,26 +250,6 @@ def backupTask(serverSql, infobase, backupPath, sqlCredentialsID) {
 //                 } catch (excp) {
 //                     echo "Error happened when creating base ${infobase}. Probably base already exists in the ibases.v8i list. Skip the error"
 //                 }
-//             }
-//         }
-//     }
-// }
-
-// def restoreTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
-//     return {
-//         stage("Востановление ${infobase} бекапа") {
-//             timestamps {
-//                 sqlUtils = new SqlUtils()
-
-//                 sqlUtils.createEmptyDb(serverSql, infobase, sqlUser, sqlPwd)
-//                 sqlUtils.restoreDb(serverSql, infobase, backupPath, sqlUser, sqlPwd)
-				
-// 				 utils = new Utils()
-
-// 				returnCode = utils.cmd("oscript one_script_tools/deleteFile.os -file ${backupPath}")
-// 				if (returnCode != 0) {
-// 					utils.raiseError("Возникла ошибка при удалении файла ${backupPath}")
-// 				}
 //             }
 //         }
 //     }

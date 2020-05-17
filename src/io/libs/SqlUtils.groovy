@@ -56,58 +56,50 @@ def backupDb(dbServer, infobase, backupPath, sqlCredentialsID) {
 // Параметры:
 //  dbServer - сервер БД
 //  infobase - имя базы на сервере БД
-//  sqlUser - Необязательный. админ sql базы
-//  sqlPwd - Необязательный. пароль админа sql базы
+//  sqlCredentialsID - CredentialsID для sql сервера
 //
 def createEmptyDb(dbServer, infobase, sqlUser, sqlPwd) {
+    withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
+        utils = new Utils()
 
-    sqlUserpath = "" 
-    if (sqlUser != null && !sqlUser.isEmpty()) {
-        sqlUserpath = "-U ${sqlUser}"
-    } else {
-        sqlUserpath = "-E"
-    }
-
-    sqlPwdPath = "" 
-    if (sqlPwd != null && !sqlPwd.isEmpty()) {
-        sqlPwdPath = "-P ${sqlPwd}"
-    }
-
-    utils = new Utils()
-    returnCode = utils.cmd("sqlcmd -S ${dbServer} ${sqlUserpath} ${sqlPwdPath} -i \"${env.WORKSPACE}/copy_etalon/error_create.sql\" -b -v restoreddb =${infobase}")
-    if (returnCode != 0) {
-        utils.raiseError("Возникла ошибка при создании пустой sql базы на  ${dbServer}\\${infobase}. Для подробностей смотрите логи")
+        sqlAuth = "" 
+        if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
+            sqlAuth = "-U username -P password"
+            sqlAuth = sqlAuth.replace("username", USERNAMESQL)
+            sqlAuth = sqlAuth.replace("password", PASSWORDSQL)
+        }
+ 
+        utils = new Utils()
+        returnCode = utils.cmd("sqlcmd -S ${dbServer} ${sqlAuth} -i \"${env.WORKSPACE}/copy_etalon/error_create.sql\" -b -v restoreddb =${infobase}")
+        if (returnCode != 0) {
+            utils.raiseError("Возникла ошибка при создании пустой sql базы на  ${dbServer}\\${infobase}. Для подробностей смотрите логи")
+        }
     }
 }
 
 // Восстанавливает базу из бекапа
 //
 // Параметры:
-//  utils - экземпляр библиотеки Utils.groovy
 //  dbServer - сервер БД
 //  infobase - имя базы на сервере БД
 //  backupPath - каталог бекапов
-//  sqlUser - Необязательный. админ sql базы
-//  sqlPwd - Необязательный. пароль админа sql базы
+//  sqlCredentialsID - CredentialsID для sql сервера
 //
 def restoreDb(dbServer, infobase, backupPath, sqlUser, sqlPwd) {
-    utils = new Utils()
+    withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
+        utils = new Utils()
 
-    sqlUserpath = "" 
-    if (sqlUser != null && !sqlUser.isEmpty()) {
-        sqlUserpath = "-U ${sqlUser}"
-    } else {
-        sqlUserpath = "-E"
-    }
+        sqlAuth = "" 
+        if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
+            sqlAuth = "-U username -P password"
+            sqlAuth = sqlAuth.replace("username", USERNAMESQL)
+            sqlAuth = sqlAuth.replace("password", PASSWORDSQL)
+        }
 
-    sqlPwdPath = "" 
-    if (sqlPwd != null && !sqlPwd.isEmpty()) {
-        sqlPwdPath = "-P ${sqlPwd}"
-    }
-
-    returnCode = utils.cmd("sqlcmd -S ${dbServer} ${sqlUserpath} ${sqlPwdPath} -i \"${env.WORKSPACE}/copy_etalon/restore.sql\" -b -v restoreddb =${infobase} -v bakfile=\"${backupPath}\"")
-    if (returnCode != 0) {
-         utils.raiseError("Возникла ошибка при восстановлении базы из sql бекапа ${dbServer}\\${infobase}. Для подробностей смотрите логи")
+        returnCode = utils.cmd("sqlcmd -S ${dbServer} ${sqlAuth} -i \"${env.WORKSPACE}/copy_etalon/restore.sql\" -b -v restoreddb =${infobase} -v bakfile=\"${backupPath}\"")
+        if (returnCode != 0) {
+            utils.raiseError("Возникла ошибка при восстановлении базы из sql бекапа ${dbServer}\\${infobase}. Для подробностей смотрите логи")
+        }
     } 
 }
 
