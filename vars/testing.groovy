@@ -199,7 +199,10 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
     stage("Загрузка из хранилища ${infobase}") {
         timestamps {
             prHelpers = new ProjectHelpers()
-             if (storage1cPath == null || storage1cPath.isEmpty()) {
+            println storage1cPath == null
+            println storage1cPath.isEmpty()
+            println storage1cPath
+            if (storage1cPath == null || storage1cPath.isEmpty()) {
                 return
             }
             

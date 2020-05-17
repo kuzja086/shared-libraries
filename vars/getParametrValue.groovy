@@ -12,7 +12,7 @@ def call(Map buildParams, String keyName) {
             println "defaultParam: для ключа ${keyName} найдено значение " + defaultParam."${keyName}"
             return defaultParam."${keyName}"
         }
-        println "Значение для ключа ${keyName} не найдено. Возвращаем пустую строку."
+        println "Значение для ключа ${keyName} не найдено. Возвращаем null"
         return null
     }
 }
