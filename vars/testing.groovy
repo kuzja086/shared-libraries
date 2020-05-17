@@ -47,6 +47,7 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
+                            // TODO получение инструментов из гит
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
                             if (storages1cPath != null && !storages1cPath.isEmpty()){
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
@@ -87,11 +88,30 @@ def call(Map buildEnv){
                                     base1CCredentialID,
                                     sqlCredentialsID
                                 )
+
+                                // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
+                                updateDbTasks["updateTask_${templateDb}"] = updateDbTask(
+                                    platform1c,
+                                    templateDb, 
+                                    storage1cPath, 
+                                    storages1cCredentalsID, 
+                                    templateDbConnString, 
+                                    base1CCredentialID
+                                )
+
+                                //  // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
+                                // backupTasks["backupTask_${templateDb}"] = backupTask(
+                                //     serverSql, 
+                                //     templateDb, 
+                                //     backupPath,
+                                //     sqlUser,
+                                //     sqlPwd
+                                // )
                             }
 
                         parallel dropDbTasks
-// 						   parallel updateDbTasks
-//                         parallel backupTasks
+						parallel updateDbTasks
+                        // parallel backupTasks
 //                         parallel restoreTasks
 //                         parallel createDbTasks
 //                         parallel runHandlers1cTasks
@@ -164,9 +184,25 @@ def call(){
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
         timestamps {
             stage("Удаление ${infobase}") {
-                utils.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
+                projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
             }
         }
+}
+
+def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, connString, base1CCredentialID) {
+    return {
+        stage("Загрузка из хранилища ${infobase}") {
+            timestamps {
+                if (storage1cPath == null || storage1cPath.isEmpty()
+                    || storages1cCredentalsID == null || storages1cCredentalsID.isEmpty()) {
+                    return
+                }
+
+                prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd, platform1c)
+                prHelpers.updateInfobase(connString, admin1cUser, admin1cPwd, platform1c)
+            }
+        }
+    }
 }
 
 // def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
@@ -184,18 +220,18 @@ def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, 
 //     }
 // }
 
-// def backupTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
-//     return {
-//         stage("sql бекап ${infobase}") {
-//             timestamps {
-//                 def sqlUtils = new SqlUtils()
+def backupTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
+    return {
+        stage("sql бекап ${infobase}") {
+            timestamps {
+                def sqlUtils = new SqlUtils()
 
-//                 sqlUtils.checkDb(serverSql, infobase, sqlUser, sqlPwd)
-//                 sqlUtils.backupDb(serverSql, infobase, backupPath, sqlUser, sqlPwd)
-//             }
-//         }
-//     }
-// }
+                sqlUtils.checkDb(serverSql, infobase, sqlUser, sqlPwd)
+                sqlUtils.backupDb(serverSql, infobase, backupPath, sqlUser, sqlPwd)
+            }
+        }
+    }
+}
 
 // def restoreTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
 //     return {
@@ -223,23 +259,6 @@ def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, 
 //             timestamps {
 //                 def projectHelpers = new ProjectHelpers()
 //                 projectHelpers.unlocking1cBase(testbaseConnString, admin1cUser, admin1cPwd)
-//             }
-//         }
-//     }
-// }
-
-// def updateDbTask(platform1c, infobase, storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd) {
-//     return {
-//         stage("Загрузка из хранилища ${infobase}") {
-//             timestamps {
-//                 prHelpers = new ProjectHelpers()
-
-//                 if (storage1cPath == null || storage1cPath.isEmpty()) {
-//                     return
-//                 }
-
-//                 prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd, platform1c)
-//                 prHelpers.updateInfobase(connString, admin1cUser, admin1cPwd, platform1c)
 //             }
 //         }
 //     }
