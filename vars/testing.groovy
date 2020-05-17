@@ -53,6 +53,7 @@ def call(Map buildEnv){
                         script {
                             // TODO получение инструментов из гит
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
+                            def storages1cPathList = [:]
                             if (!storages1cPath.trim().equals('null')){
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
                                 if (storages1cPathList.size() != 0) {
