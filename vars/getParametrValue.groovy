@@ -1,4 +1,4 @@
-def call(Map buildParams, String keyName) {
+String call(Map buildParams, String keyName) {
     def defaultParam = getDefaultParams()
     if(env."${keyName}" != null){
         println "ENV: для ключа ${keyName} найдено значение " + env."${keyName}"
@@ -13,7 +13,7 @@ def call(Map buildParams, String keyName) {
             return defaultParam."${keyName}"
         }
         println "Значение для ключа ${keyName} не найдено. Возвращаем null"
-        return ""
+        return null
     }
 }
 

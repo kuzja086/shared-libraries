@@ -52,9 +52,8 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             // TODO получение инструментов из гит
-                            println storages1cPath
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
-                            if (storages1cPath != null && !storages1cPath.isEmpty()){
+                            if (!storages1cPath.trim().equals('null')){
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
                             }
                             
