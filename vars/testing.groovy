@@ -57,7 +57,6 @@ def call(Map buildEnv){
                                 if (storages1cPathList.size() != 0) {
                                     assert storages1cPathList.size() == templatebasesList.size()
                                 }
-                            }
                             
                             testbase = null
 
