@@ -1,3 +1,4 @@
+import io.libs.Utils
 // Удаляет базу из кластера через powershell.
 //
 // Параметры:
@@ -33,7 +34,8 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
             sqluserLine = sqluserLine.replace("username", USERNAMESQL)
             sqluserLine = sqluserLine.replace("password", PASSWORDSQL)
         }
-        
+
+        def utils = new Utils() 
         returnCode = utils.cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
         if (returnCode != 0) { 
             error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."

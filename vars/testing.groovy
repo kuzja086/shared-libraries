@@ -198,7 +198,7 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
                     return
                 }
 
-                // prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd)
+                // prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd, platform1c)
                 // prHelpers.updateInfobase(connString, admin1cUser, admin1cPwd, platform1c)
             }
         }
@@ -220,18 +220,18 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
 //     }
 // }
 
-// def backupTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
-//     return {
-//         stage("sql бекап ${infobase}") {
-//             timestamps {
-//                 def sqlUtils = new SqlUtils()
+def backupTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
+    return {
+        stage("sql бекап ${infobase}") {
+            timestamps {
+                def sqlUtils = new SqlUtils()
 
-//                 sqlUtils.checkDb(serverSql, infobase, sqlUser, sqlPwd)
-//                 sqlUtils.backupDb(serverSql, infobase, backupPath, sqlUser, sqlPwd)
-//             }
-//         }
-//     }
-// }
+                sqlUtils.checkDb(serverSql, infobase, sqlUser, sqlPwd)
+                sqlUtils.backupDb(serverSql, infobase, backupPath, sqlUser, sqlPwd)
+            }
+        }
+    }
+}
 
 // def restoreTask(serverSql, infobase, backupPath, sqlUser, sqlPwd) {
 //     return {
