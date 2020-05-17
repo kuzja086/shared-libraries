@@ -55,13 +55,11 @@ def call(Map buildEnv){
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
                             if (!storages1cPath.trim().equals('null')){
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
+                                if (storages1cPathList.size() != 0) {
+                                    assert storages1cPathList.size() == templatebasesList.size()
+                                }
                             }
                             
-
-                            if (storages1cPathList.size() != 0) {
-                                assert storages1cPathList.size() == templatebasesList.size()
-                            }
-
                             testbase = null
 
                             dir ('build') {
