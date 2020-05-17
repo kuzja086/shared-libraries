@@ -1,3 +1,5 @@
+import io.libs.SqlUtils
+import io.libs.ProjectHelpers
 import io.libs.Utils
 
 def call(Map buildEnv){
@@ -186,6 +188,7 @@ def call(){
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
         timestamps {
             stage("Удаление ${infobase}") {
+                def projectHelpers = new ProjectHelpers()
                 projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
             }
         }
@@ -199,7 +202,7 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
                     || storages1cCredentalsID == null || storages1cCredentalsID.isEmpty()) {
                     return
                 }
-                prHelpers = new Utils()
+                prHelpers = new ProjectHelpers()
                 // prHelpers.loadCfgFrom1CStorage(storage1cPath, storageUser, storagePwd, connString, admin1cUser, admin1cPwd, platform1c)
                 // prHelpers.updateInfobase(connString, admin1cUser, admin1cPwd, platform1c)
             }

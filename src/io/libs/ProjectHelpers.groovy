@@ -71,45 +71,38 @@ def getConnString(server1c, infobase, agent1cPort) {
 //  agentPort - порт агента кластера 1с
 //  serverSql - сервер sql
 //  base - база для удаления из кластера
-//  admin1cUser - имя администратора 1С в кластере для базы
-//  admin1cPwd - пароль администратора 1С в кластере для базы
-//  sqluser - юзер sql
-//  sqlPwd - пароль sql
+//  base1CCredentialID - CredentialsID Для базы 1С
+//  sqlCredentialsID - CredentialsID для sql сервера
 //  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
 //
-def dropDb(server1c, agentPort, serverSql, base, admin1cUser, admin1cPwd, sqluser, sqlPwd, fulldrop = false) {
+def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'),
+        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
+       
+        fulldropLine = "";
+        if (fulldrop) {
+            fulldropLine = "-fulldrop true"
+        }
 
-    utils = new Utils()
-    
-    fulldropLine = "";
-    if (fulldrop) {
-        fulldropLine = "-fulldrop true"
-    }
+        admin1cUserLine = "";
+        if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+            admin1cUserLine = "-user username -passw password"
+            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
+            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+        }
 
-    admin1cUserLine = "";
-    if (admin1cUser != null && !admin1cUser.isEmpty()) {
-        admin1cUserLine = "-user ${admin1cUser}"
-    }
+        sqluserLine = "";
+        if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
+            sqluserLine = "-sqluser username -sqlPwd password"
+            sqluserLine = sqluserLine.replace("username", USERNAMESQL)
+            sqluserLine = sqluserLine.replace("password", PASSWORDSQL)
+        }
 
-    admin1cPwdLine = "";
-    if (admin1cPwd != null && !admin1cPwd.isEmpty()) {
-        admin1cPwdLine = "-passw ${admin1cPwd}"
-    }
-
-    sqluserLine = "";
-    if (sqluser != null && !sqluser.isEmpty()) {
-        sqluserLine = "-sqluser ${sqluser}"
-    }
-
-    sqlpasswLine = "";
-    if (sqlPwd != null && !sqlPwd.isEmpty()) {
-        sqlpasswLine = "-sqlPwd ${sqlPwd}"
-    }
-
-    returnCode = utils.cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${admin1cPwdLine} ${sqluserLine} ${sqlpasswLine} ${fulldropLine}")
-    if (returnCode != 0) { 
-        error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
-    }
+        returnCode = utils.cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
+        if (returnCode != 0) { 
+            error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
+        }
+    }    
 }
 
 // Загружает в базу конфигурацию из 1С хранилища. Базу желательно подключить к хранилищу под загружаемым пользователем,
