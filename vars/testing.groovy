@@ -193,12 +193,14 @@ def call(){
 
 
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
+    return {
         timestamps {
             stage("Удаление ${infobase}") {
                 def projectHelpers = new ProjectHelpers()
                 projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
             }
         }
+    }
 }
 
 def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, connString, base1CCredentialID) {
