@@ -113,15 +113,14 @@ def call(Map buildEnv){
                                     backupPath,
                                     sqlCredentialsID
                                 )
-                            // // 5. Создаем тестовую базу кластере 1С
-                            // createDbTasks["createDbTask_${testbase}"] = createDbTask(
-                            //     "${server1c}:${agent1cPort}",
-                            //     serverSql,
-                            //     platform1c,
-                            //     testbase,
-							// 	sqlUser,
-                            //     sqlPwd
-                            // )
+                                // 5. Создаем тестовую базу кластере 1С
+                                createDbTasks["createDbTask_${testbase}"] = createDbTask(
+                                    "${server1c}:${agent1cPort}",
+                                    serverSql,
+                                    platform1c,
+                                    testbase,
+                                    sqlCredentialsID
+                                )
                             // // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
                             // runHandlers1cTasks["runHandlers1cTask_${testbase}"] = runHandlers1cTask(
                             //     testbase, 
@@ -240,20 +239,18 @@ def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
     }
 }
 
-// def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
-//     return {
-//         stage("Создание базы ${infobase}") {
-//             timestamps {
-//                 def projectHelpers = new ProjectHelpers()
-//                 try {
-//                     projectHelpers.createDb(platform1c, server1c, serversql, sqlUser, sqlPwd, infobase, null, false)
-//                 } catch (excp) {
-//                     echo "Error happened when creating base ${infobase}. Probably base already exists in the ibases.v8i list. Skip the error"
-//                 }
-//             }
-//         }
-//     }
-// }
+def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
+    stage("Создание базы ${infobase}") {
+        timestamps {
+            def projectHelpers = new ProjectHelpers()
+            try {
+                projectHelpers.createDb(platform1c, server1c, serversql, sqlCredentialsID, infobase, null, false)
+            } catch (excp) {
+                echo "Error happened when creating base ${infobase}. Probably base already exists in the ibases.v8i list. Skip the error"
+            }
+        }
+    }
+}
 
 // def runHandlers1cTask(infobase, admin1cUser, admin1cPwd, testbaseConnString) {
 //     return {

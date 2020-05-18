@@ -7,33 +7,41 @@ package io.libs
 //  platform - номер платформы 1С, например 8.3.12.1529
 //  server1c - сервер 1c
 //  serversql - сервер sql 
-//  sqluser - Пользователь sql
-//  sqlpassw - Пароль sql
+//  sqlCredentialsID - CredentialsID для sql сервера
 //  base - имя базы на сервере 1c и sql
 //  cfdt - файловый путь к dt или cf конфигурации для загрузки. Только для пакетного режима!
 //  isras - если true, то используется RAS для скрипта, в противном случае - пакетный режим
 //
-def createDb(platform, server1c, serversql, sqluser, sqlpassw, base, cfdt, isras) {
-    utils = new Utils()
+def createDb(platform, server1c, serversql, sqlCredentialsID, base, cfdt, isras) {
+    withCredentials([usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
+        utils = new Utils()
 
-    cfdtpath = ""
-    if (cfdt != null && !cfdt.isEmpty()) {
-        cfdtpath = "-cfdt ${cfdt}"
-    }
+        cfdtpath = ""
+        if (cfdt != null && !cfdt.isEmpty()) {
+            cfdtpath = "-cfdt ${cfdt}"
+        }
 
-    israspath = ""
-    if (isras) {
-        israspath = "-isras true"
-    }
+        israspath = ""
+        if (isras) {
+            israspath = "-isras true"
+        }
 
-    platformLine = ""
-    if (platformLine != null && !platformLine.isEmpty()) {
-        platformLine = "-platform ${platform}"
-    }
+        platformLine = ""
+        if (platformLine != null && !platformLine.isEmpty()) {
+            platformLine = "-platform ${platform}"
+        }
 
-    returnCode = utils.cmd("oscript one_script_tools/dbcreator.os ${platformLine} -server1c ${server1c} -serversql ${serversql} -sqluser ${sqluser} -sqlpassw ${sqlpassw} -base ${base} ${cfdtpath} ${israspath}")
-    if (returnCode != 0) {
-        utils.raiseError("Возникла ошибка при создании базы ${base} в кластере ${serversql}")
+        sqlAuth = "";
+        if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
+            sqlAuth = "-sqluser username -sqlpassw password"
+            sqlAuth = sqlAuth.replace("username", USERNAMESQL)
+            sqlAuth = sqlAuth.replace("password", PASSWORDSQL)
+        }
+
+        returnCode = utils.cmd("oscript one_script_tools/dbcreator.os ${platformLine} -server1c ${server1c} -serversql ${serversql} ${sqlAuth} -base ${base} ${cfdtpath} ${israspath}")
+        if (returnCode != 0) {
+            utils.raiseError("Возникла ошибка при создании базы ${base} в кластере ${serversql}")
+        }
     }
 }
 
