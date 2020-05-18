@@ -239,7 +239,7 @@ def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
     }
 }
 
-def createDbTask(server1c, serverSql, platform1c, infobase, sqlUser, sqlPwd) {
+def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
     stage("Создание базы ${infobase}") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
