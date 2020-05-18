@@ -51,7 +51,7 @@ def createDb(platform, server1c, serversql, sqlCredentialsID, base, cfdt, isras)
 //  сonnection_string - путь к 1С базе.
 //  base1CCredentialID - CredentialsID Для базы 1С
 //
-def unlocking1cBase(connString, admin1cUsr, admin1cPwd) {
+def unlocking1cBase(connString, base1CCredentialID) {
     withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
         utils = new Utils()
 

@@ -224,7 +224,7 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString) {
     stage("Запуск 1с обработки на ${infobase}") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
-            projectHelpers.unlocking1cBase(testbaseConnString, admin1cUser, admin1cPwd)
+            projectHelpers.unlocking1cBase(testbaseConnString, base1CCredentialID)
         }
     }
 }
