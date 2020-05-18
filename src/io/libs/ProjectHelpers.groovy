@@ -163,9 +163,9 @@ def updateInfobase(connString, base1CCredentialID, platform) {
 
         baseAuth = "";
         if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
-            admin1cUserLine = "--db-user username --db-pwd password"
-            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
-            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+            baseAuth = "--db-user username --db-pwd password"
+            baseAuth = baseAuth.replace("username", USERNAMEBASE)
+            baseAuth = baseAuth.replace("password", PASSWORDBASE)
         }
 
         platformLine = ""
@@ -190,7 +190,7 @@ def updateInfobase(connString, base1CCredentialID, platform) {
 def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase){
     withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
         utils = new Utils()
-        
+
         platform1cLine = ""
         if (platform1c != null && !platform1c.isEmpty()) {
             platform1cLine = "--v8version ${platform1c}"
@@ -198,9 +198,9 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
 
         baseAuth = "";
         if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
-            admin1cUserLine = "--db-user username --db-pwd password"
-            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
-            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+            baseAuth = "--db-user username --db-pwd password"
+            baseAuth = baseAuth.replace("username", USERNAMEBASE)
+            baseAuth = baseAuth.replace("password", PASSWORDBASE)
         }
 
         // Запускаем ADD тестирование на произвольной базе, сохранившейся в переменной testbaseConnString
