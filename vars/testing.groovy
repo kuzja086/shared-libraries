@@ -121,13 +121,20 @@ def call(Map buildEnv){
                                     testbase,
                                     sqlCredentialsID
                                 )
-                            // // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
-                            // runHandlers1cTasks["runHandlers1cTask_${testbase}"] = runHandlers1cTask(
-                            //     testbase, 
-                            //     admin1cUser, 
-                            //     admin1cPwd,
-                            //     testbaseConnString
-                            // )
+                                // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
+                                runHandlers1cTask(
+                                    testbase, 
+                                    base1CCredentialID,
+                                    testbaseConnString
+                                )
+                                // 7. Тестирование Vanessa
+                                test1C(
+                                    platform1c,
+                                    base1CCredentialID,
+                                    testbaseConnString,
+                                    "${server1c}:${agent1cPort}",
+                                    testbase
+                                )
                             }
 
                             // parallel dropDbTasks 
@@ -148,45 +155,6 @@ def call(Map buildEnv){
 def call(){
     call([:])
 }
-
-
-//         stage("Тестирование ADD") {
-//             steps {
-//                 timestamps {
-//                     script {
-
-//                         if (templatebasesList.size() == 0) {
-//                             return
-//                         }
-
-//                         platform1cLine = ""
-//                         if (platform1c != null && !platform1c.isEmpty()) {
-//                             platform1cLine = "--v8version ${platform1c}"
-//                         }
-
-//                         admin1cUsrLine = ""
-//                         if (admin1cUser != null && !admin1cUser.isEmpty()) {
-//                             admin1cUsrLine = "--db-user ${admin1cUser}"
-//                         }
-
-//                         admin1cPwdLine = ""
-//                         if (admin1cPwd != null && !admin1cPwd.isEmpty()) {
-//                             admin1cPwdLine = "--db-pwd ${admin1cPwd}"
-//                         }
-//                         // Запускаем ADD тестирование на произвольной базе, сохранившейся в переменной testbaseConnString
-//                         returnCode = utils.cmd("runner vanessa --settings tools/vrunner.json ${platform1cLine} --ibconnection \"${testbaseConnString}\" ${admin1cUsrLine} ${admin1cPwdLine} --pathvanessa tools/vanessa-automation/vanessa-automation.epf")
-
-//                         if (returnCode != 0) {
-//                             utils.raiseError("Возникла ошибка при запуске ADD на сервере ${server1c} и базе ${testbase}")
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }   
-//     
-// }
-
 
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
     stage("Удаление ${infobase}") {
@@ -252,13 +220,20 @@ def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
     }
 }
 
-// def runHandlers1cTask(infobase, admin1cUser, admin1cPwd, testbaseConnString) {
-//     return {
-//         stage("Запуск 1с обработки на ${infobase}") {
-//             timestamps {
-//                 def projectHelpers = new ProjectHelpers()
-//                 projectHelpers.unlocking1cBase(testbaseConnString, admin1cUser, admin1cPwd)
-//             }
-//         }
-//     }
-// }
+def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString) {
+    stage("Запуск 1с обработки на ${infobase}") {
+        timestamps {
+            def projectHelpers = new ProjectHelpers()
+            projectHelpers.unlocking1cBase(testbaseConnString, admin1cUser, admin1cPwd)
+        }
+    }
+}
+
+def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase){
+    stage("Тестирование ADD") {
+        timestamps {
+            def projectHelpers = new ProjectHelpers()
+            projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase)        
+        }
+    }
+}

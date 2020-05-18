@@ -49,23 +49,21 @@ def createDb(platform, server1c, serversql, sqlCredentialsID, base, cfdt, isras)
 //
 // Параметры:
 //  сonnection_string - путь к 1С базе.
-//  admin1cUsr - имя админа 1С базы
-//  admin1cPwd - пароль админа 1С базы
+//  base1CCredentialID - CredentialsID Для базы 1С
 //
 def unlocking1cBase(connString, admin1cUsr, admin1cPwd) {
-    utils = new Utils()
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
+        utils = new Utils()
 
-    admin1cUsrLine = ""
-    if (admin1cUser != null && !admin1cUser.isEmpty()) {
-        admin1cUsrLine = "--db-user ${admin1cUsr}"
+        baseAuth = "";
+        if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+            admin1cUserLine = "--db-user username --db-pwd password"
+            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
+            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+        }
+
+        utils.cmd("runner run --execute ${env.WORKSPACE}/one_script_tools/unlockBase1C.epf --command \"-locktype unlock\" ${baseAuth} --ibconnection=${connString}")
     }
-
-    admin1cPwdLine = ""
-    if (admin1cPwd != null && !admin1cPwd.isEmpty()) {
-        admin1cPwdLine = "--db-pwd ${admin1cPwd}"
-    }
-
-    utils.cmd("runner run --execute ${env.WORKSPACE}/one_script_tools/unlockBase1C.epf --command \"-locktype unlock\" ${admin1cUsrLine} ${admin1cPwdLine} --ibconnection=${connString}")
 }
 
 def getConnString(server1c, infobase, agent1cPort) {
@@ -178,6 +176,35 @@ def updateInfobase(connString, base1CCredentialID, platform) {
         returnCode = utils.cmd("runner updatedb --ibconnection ${connString} ${baseAuth} ${platformLine}")
         if (returnCode != 0) {
             utils.raiseError("Обновление базы ${connString} в режиме конфигуратора завершилось с ошибкой. Для дополнительной информации смотрите логи")
+        }
+    }    
+}
+
+// Запускаем тестирование на произваольной базе 1С
+//
+// Параметры:
+//
+// platform1c - Версия платформы
+//  
+//
+def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase){
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
+        platform1cLine = ""
+        if (platform1c != null && !platform1c.isEmpty()) {
+            platform1cLine = "--v8version ${platform1c}"
+        }
+
+        baseAuth = "";
+        if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+            admin1cUserLine = "--db-user username --db-pwd password"
+            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
+            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+        }
+
+        // Запускаем ADD тестирование на произвольной базе, сохранившейся в переменной testbaseConnString
+        returnCode = utils.cmd("runner vanessa --settings tools/vrunner.json ${platform1cLine} --ibconnection \"${testbaseConnString}\" ${baseAuth} --pathvanessa tools/vanessa-automation/vanessa-automation.epf")
+        if (returnCode != 0) {
+            utils.raiseError("Возникла ошибка при запуске ADD на сервере ${server1c} и базе ${testbase}")
         }
     }    
 }
