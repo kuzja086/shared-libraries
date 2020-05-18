@@ -114,7 +114,7 @@ def call(Map buildEnv){
                                     sqlCredentialsID
                                 )
                                 // 5. Создаем тестовую базу кластере 1С
-                                createDbTasks["createDbTask_${testbase}"] = createDbTask(
+                                createDbTask(
                                     "${server1c}:${agent1cPort}",
                                     serverSql,
                                     platform1c,
