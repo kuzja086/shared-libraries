@@ -55,7 +55,7 @@ def call(Map buildEnv){
                             // TODO получение инструментов из гит
                             def utils = new Utils()
 
-                            utils.checkoutSCM()
+                            utils.checkoutSCM(buildEnv)
 
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
