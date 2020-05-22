@@ -53,6 +53,10 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             // TODO получение инструментов из гит
+                            def utils = new Utils()
+
+                            utils.checkoutSCM()
+
                             templatebasesList = utils.lineToArray(templatebases.toLowerCase())
                                 storages1cPathList = utils.lineToArray(storages1cPath.toLowerCase())
                                 if (storages1cPathList.size() != 0) {
@@ -231,10 +235,11 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString) {
 }
 
 def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase){
-    stage("Тестирование ADD") {
+    stage("Тестирование Vanessa") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
             projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase)        
         }
     }
+    //TODO Сделать дымовые и другие тесты
 }

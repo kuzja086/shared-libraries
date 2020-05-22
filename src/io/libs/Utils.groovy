@@ -93,10 +93,10 @@ def currentDateWithFormat(format) {
 //  branch - имя ветки, которую клонировать
 //
 def checkoutSCM(Map buildEnv) {
-    def branch        = getParametrValue(buildEnv, 'branch')
-    def credentialsId = getParametrValue(buildEnv, 'credentialsId')
-    def repo          = getParametrValue(buildEnv, 'repo')
-    def targetDir     = getParametrValue(buildEnv, 'targetDir')
+    def branch        = getParametrValue(buildEnv, 'toolsBranch')
+    def credentialsId = getParametrValue(buildEnv, 'toolsCredentialsId')
+    def repo          = getParametrValue(buildEnv, 'toolsRepo')
+    def targetDir     = getParametrValue(buildEnv, 'toolsTargetDir')
 
     checkout changelog: false,
     poll: false,
