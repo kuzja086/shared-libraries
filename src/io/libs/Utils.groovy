@@ -107,15 +107,17 @@ def checkoutSCM(Map buildEnv) {
         userRemoteConfigs: [[credentialsId: credentialsId, url: repo]],
         extensions: [
             //[$class: 'CleanBeforeCheckout'],
-            [$class: 'RelativeTargetDirectory', 
-                relativeTargetDir: targetDir],
-            [$class: 'SubmoduleOption',
-                disableSubmodules: false,
-                parentCredentials: true,
-                recursiveSubmodules: true,
-                trackingSubmodules: true,
-                reference: '',
-                trackingSubmodules: false]]]
+            // [$class: 'RelativeTargetDirectory', 
+            //     relativeTargetDir: targetDir],
+            // [$class: 'SubmoduleOption',
+            //     disableSubmodules: false,
+            //     parentCredentials: true,
+            //     recursiveSubmodules: true,
+            //     trackingSubmodules: true,
+            //     reference: '',
+            //     trackingSubmodules: false]
+            ]
+    ]
 }
 
 // Проверяет доступность хоста через TCP IP протокол
