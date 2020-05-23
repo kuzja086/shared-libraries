@@ -48,7 +48,7 @@ def getDefaultParams(){
         //Git
         'toolsBranch' : 'master', // Ветка Git по умолчанию
         'toolsCredentialsId' : 'GitHubID', // Имя credentialsId для GitHub
-        'toolsTargetDir' : "${CURRENT_CATALOG}", // Каталог для вспомогательных инструментов
+        'toolsTargetDir' : "${CURRENT_CATALOG}\\tools", // Каталог для вспомогательных инструментов
         'toolsRepo' : 'https://github.com/kuzja086/testing_tool.git' // Репозитарий с инструментами для тестирования
     ]
 }

@@ -106,17 +106,17 @@ def checkoutSCM(Map buildEnv) {
         submoduleCfg: [], 
         userRemoteConfigs: [[credentialsId: credentialsId, url: repo]],
         extensions: [
-            //[$class: 'CleanBeforeCheckout'],
-            // [$class: 'RelativeTargetDirectory', 
-            //     relativeTargetDir: targetDir],
-            // [$class: 'SubmoduleOption',
-            //     disableSubmodules: false,
-            //     parentCredentials: true,
-            //     recursiveSubmodules: true,
-            //     trackingSubmodules: true,
-            //     reference: '',
-            //     trackingSubmodules: false]
-            ]
+            [$class: 'CleanBeforeCheckout'],
+            [$class: 'RelativeTargetDirectory', 
+                relativeTargetDir: targetDir],
+            [$class: 'SubmoduleOption',
+                disableSubmodules: false,
+                parentCredentials: true,
+                recursiveSubmodules: true,
+                trackingSubmodules: true,
+                reference: '',
+                trackingSubmodules: false]
+        ]
     ]
 }
 
