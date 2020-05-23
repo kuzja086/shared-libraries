@@ -38,7 +38,7 @@ def createDb(platform, server1c, serversql, sqlCredentialsID, base, cfdt, isras)
             sqlAuth = sqlAuth.replace("password", PASSWORDSQL)
         }
 
-        returnCode = utils.cmd("oscript one_script_tools/dbcreator.os ${platformLine} -server1c ${server1c} -serversql ${serversql} ${sqlAuth} -base ${base} ${cfdtpath} ${israspath}")
+        returnCode = utils.cmd("oscript tools/one_script_tools/dbcreator.os ${platformLine} -server1c ${server1c} -serversql ${serversql} ${sqlAuth} -base ${base} ${cfdtpath} ${israspath}")
         if (returnCode != 0) {
             utils.raiseError("Возникла ошибка при создании базы ${base} в кластере ${serversql}")
         }
@@ -62,7 +62,7 @@ def unlocking1cBase(connString, base1CCredentialID) {
             admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
         }
 
-        utils.cmd("runner run --execute ${env.WORKSPACE}/one_script_tools/unlockBase1C.epf --command \"-locktype unlock\" ${baseAuth} --ibconnection=${connString}")
+        utils.cmd("runner run --execute ${env.WORKSPACE}/tools/one_script_tools/unlockBase1C.epf --command \"-locktype unlock\" ${baseAuth} --ibconnection=${connString}")
     }
 }
 
@@ -106,7 +106,7 @@ def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredenti
             sqluserLine = sqluserLine.replace("password", PASSWORDSQL)
         }
         
-        returnCode = utils.cmd("powershell -file \"${env.WORKSPACE}/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
+        returnCode = utils.cmd("powershell -file \"${env.WORKSPACE}/tools/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
         if (returnCode != 0) { 
             error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
         }
@@ -204,7 +204,7 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
         }
 
         // Запускаем ADD тестирование на произвольной базе, сохранившейся в переменной testbaseConnString
-        returnCode = utils.cmd("runner vanessa --settings tools/vrunner.json ${platform1cLine} --ibconnection \"${testbaseConnString}\" ${baseAuth} --pathvanessa tools/vanessa-automation/vanessa-automation.epf")
+        returnCode = utils.cmd("runner vanessa --settings tools/test/vrunner.json ${platform1cLine} --ibconnection \"${testbaseConnString}\" ${baseAuth} --pathvanessa tools/vanessa-automation/vanessa-automation.epf")
         if (returnCode != 0) {
             utils.raiseError("Возникла ошибка при запуске ADD на сервере ${server1c} и базе ${testbase}")
         }
