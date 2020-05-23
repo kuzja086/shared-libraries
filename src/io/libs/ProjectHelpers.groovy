@@ -204,7 +204,7 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
         }
 
         // Запускаем ADD тестирование на произвольной базе, сохранившейся в переменной testbaseConnString
-        returnCode = utils.cmd("runner vanessa --settings tools/test/vrunner.json ${platform1cLine} --ibconnection \"${testbaseConnString}\" ${baseAuth} --pathvanessa tools/vanessa-automation/vanessa-automation.epf")
+        returnCode = utils.cmd("runner vanessa --settings tools/test/vrunner.json ${platform1cLine} --ibconnection \"${testbaseConnString}\" ${baseAuth} --pathvanessa tools/test/vanessa-automation/vanessa-automation.epf")
         if (returnCode != 0) {
             utils.raiseError("Возникла ошибка при запуске ADD на сервере ${server1c} и базе ${testbase}")
         }
