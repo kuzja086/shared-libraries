@@ -203,11 +203,7 @@ def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
 
             sqlUtils.createEmptyDb(serverSql, infobase, sqlCredentialsID)
             sqlUtils.restoreDb(serverSql, infobase, backupPath, sqlCredentialsID)
-
-			returnCode = utils.cmd("oscript one_script_tools/deleteFile.os -file ${backupPath}")
-			if (returnCode != 0) {
-				utils.raiseError("Возникла ошибка при удалении файла ${backupPath}")
-			}
+            sqlUtils.clearBackups(backupPath)
         }
     }
 }
