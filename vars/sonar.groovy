@@ -22,7 +22,7 @@ def call(Map buildEnv){
             def MEMORY_FOR_JAVA = getParametrValue(buildEnv, 'memoryForJava')
             def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
-            def projectNameEDT = getParameterVlue(buildEnv, 'projectNameEDT')
+            def projectNameEDT = getParametrVlue(buildEnv, 'projectNameEDT')
         }
 
         options {
