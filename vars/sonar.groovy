@@ -147,12 +147,12 @@ def call(Map buildEnv){
                     script {
                     // dir('Repo') {
                     withSonarQubeEnv('Sonar') {
-                    def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% 
-                        -Dsonar.projectKey=${projectNameEDT} 
-                        -Dsonar.sources=\"${SRC}\" 
-                        -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} 
-                        -Dsonar.sourceEncoding=UTF-8 
-                        -Dsonar.inclusions=**/*.bsl 
+                    def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION%/n 
+                        -Dsonar.projectKey=${projectNameEDT}/n 
+                        -Dsonar.sources=\"${SRC}\"/n 
+                        -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}/n 
+                        -Dsonar.sourceEncoding=UTF-8/n 
+                        -Dsonar.inclusions=**/*.bsl/n 
                         -Dsonar.bsl.languageserver.enabled=false"
 
                     if (!perf_catalog.isEmpty()) {
