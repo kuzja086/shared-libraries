@@ -170,7 +170,7 @@ def call(Map buildEnv){
                     @DEL temp_SONAR_PROJECTVERSION
                     @echo %SONAR_PROJECTVERSION%
                     @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
-                    ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
+                    ${scannerHome}\\sonar-scanner\\bin ${scanner_properties} -Dfile.encoding=UTF-8
                     """)
 
                     PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
