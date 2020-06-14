@@ -62,7 +62,8 @@ def call(Map buildEnv){
                         BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
                         BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
 
-                        cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"./${projectNameEDT}/src\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\"")
+                        def utils = new Utils()
+                        utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"./${projectNameEDT}/src\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\"")
                     }
                 }
             }
