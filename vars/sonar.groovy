@@ -23,6 +23,7 @@ def call(Map buildEnv){
             def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
+            def perf_catalog = getParametrValue(buildEnv, 'perf_catalog')
         }
 
         options {

@@ -52,7 +52,8 @@ def getDefaultParams(){
         'toolsRepo' : 'https://github.com/kuzja086/testing_tool.git', // Репозитарий с инструментами для тестирования
 
         //Sonar
-        'memoryForJava' : '2' // Количество ГБ для выполнения операций на JAVA
+        'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
+        'perf_catalog' : '' // Каталог для замеров производительности
     
     ]
 }
