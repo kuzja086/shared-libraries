@@ -43,12 +43,12 @@ def call(Map buildEnv){
                             RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
                             
                             // создаем/очищаем временный каталог
-                            dir(RESULT_CATALOG) {
-                            deleteDir()
-                                writeFile file: 'acc.json', text: '{"issues": []}'
-                                writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
-                                writeFile file: 'edt.json', text: '{"issues": []}'
-                            }
+                            // dir(RESULT_CATALOG) {
+                            // deleteDir()
+                            //     writeFile file: 'acc.json', text: '{"issues": []}'
+                            //     writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
+                            //     writeFile file: 'edt.json', text: '{"issues": []}'
+                            // }
 
                             GENERIC_ISSUE_JSON ="${RESULT_CATALOG}/acc.json,${RESULT_CATALOG}/bsl-generic-json.json,${RESULT_CATALOG}/edt.json"
                            
@@ -57,19 +57,19 @@ def call(Map buildEnv){
                     }
                 }
             }
-            stage('bsl-language-server') {
-                steps {
-                    timestamps {
-                        script {
-                            BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
-                            BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
+            // stage('bsl-language-server') {
+            //     steps {
+            //         timestamps {
+            //             script {
+            //                 BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
+            //                 BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
 
-                            def utils = new Utils()
-                            utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${RESULT_CATALOG}\"")
-                        }
-                    }
-                }
-            }
+            //                 def utils = new Utils()
+            //                 utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${RESULT_CATALOG}\"")
+            //             }
+            //         }
+            //     }
+            // }
             //stage('АПК') {
            // steps {
            //     timestamps {
@@ -114,8 +114,9 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             STEBI_SETTINGS =  "${toolsTargetDir}.settings.json"
-
-                            cmd("""
+                            
+                            def utils = new Utils()
+                            utils.cmd("""
                             set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
                             set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
                             set SRC=${SRC}
@@ -155,7 +156,9 @@ def call(Map buildEnv){
                         
                                 def scannerHome = tool 'SonarQube Scanner';
 
-                                cmd("""
+                                def utils = new Utils()
+
+                                utils.cmd("""
                                 @set SRC=\"${SRC}\"
                                 @echo %SRC%
                                 @call stebi g > temp_SONAR_PROJECTVERSION
