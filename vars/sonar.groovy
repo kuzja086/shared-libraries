@@ -40,7 +40,7 @@ def call(Map buildEnv){
                             utils.checkoutSCM(buildEnv)
 
                             CURRENT_CATALOG = pwd()
-                            TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
+                            RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
                             
                             // создаем/очищаем временный каталог
                             dir(TEMP_CATALOG) {
@@ -51,6 +51,8 @@ def call(Map buildEnv){
                             }
 
                             GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json,${TEMP_CATALOG}/edt.json"
+                           
+                            SRC = "./${projectNameEDT}/src"
                         }
                     }
                 }
@@ -63,7 +65,7 @@ def call(Map buildEnv){
                         BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
 
                         def utils = new Utils()
-                        utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"./${projectNameEDT}/src\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\"")
+                        utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${RESULT_CATALOG}\"")
                     }
                 }
             }
@@ -111,13 +113,14 @@ def call(Map buildEnv){
             steps {
                 timestamps {
                     script {
-                    cmd("""
-                    set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
-                    set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
-                    set SRC=\"./Repo/${SRC}\"
+                        STEBI_SETTINGS =  './Sonar/settings.json'
+                        cmd("""
+                        set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
+                        set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
+                        set SRC=${SRC}
 
-                    stebi transform -r=0
-                    """)
+                        stebi transform -r=0
+                        """)
                     }
                 }
             }
