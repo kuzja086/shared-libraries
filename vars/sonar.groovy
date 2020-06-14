@@ -114,7 +114,7 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            STEBI_SETTINGS =  "${toolsTargetDir}.settings.json"
+                            STEBI_SETTINGS = "${toolsTargetDir}/settings.json"
                             
                             def utils = new Utils()
                             utils.cmd("""
