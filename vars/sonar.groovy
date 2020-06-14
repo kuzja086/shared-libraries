@@ -151,9 +151,9 @@ def call(Map buildEnv){
                             withSonarQubeEnv('Sonar') {
                                 def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl -Dsonar.bsl.languageserver.enabled=false"
 
-                                if (!perf_catalog.isEmpty()) {
-                                    scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
-                                }
+                                // if (!perf_catalog.isEmpty()) {
+                                //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
+                                // }
                         
                                 def scannerHome = tool 'SonarQube Scanner';
 
