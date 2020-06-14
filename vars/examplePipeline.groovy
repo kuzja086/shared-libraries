@@ -18,6 +18,11 @@ def call(Map buildEnv){
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
         }
 
+        options {
+            timeout(time: 8, unit: 'HOURS')
+            buildDiscarder(logRotator(numToKeepStr: '10'))
+        }
+        
         stages{
             stage('Инициализация') {
                 steps {
