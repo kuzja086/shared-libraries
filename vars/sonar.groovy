@@ -58,18 +58,18 @@ def call(Map buildEnv){
                 }
             }
             stage('bsl-language-server') {
-            steps {
-                timestamps {
-                    script {
-                        BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
-                        BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
+                steps {
+                    timestamps {
+                        script {
+                            BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
+                            BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
 
-                        def utils = new Utils()
-                        utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${RESULT_CATALOG}\"")
+                            def utils = new Utils()
+                            utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${RESULT_CATALOG}\"")
+                        }
                     }
                 }
             }
-        }
             //stage('АПК') {
            // steps {
            //     timestamps {
@@ -109,23 +109,23 @@ def call(Map buildEnv){
         //         }
         //     }
         // }
-        stage('Трансформация результатов') {
-            steps {
-                timestamps {
-                    script {
-                        STEBI_SETTINGS =  "${toolsTargetDir}.settings.json"
+            stage('Трансформация результатов') {
+                steps {
+                    timestamps {
+                        script {
+                            STEBI_SETTINGS =  "${toolsTargetDir}.settings.json"
 
-                        cmd("""
-                        set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
-                        set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
-                        set SRC=${SRC}
+                            cmd("""
+                            set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
+                            set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
+                            set SRC=${SRC}
 
-                        stebi transform -r=0
-                        """)
+                            stebi transform -r=0
+                            """)
+                        }
                     }
                 }
             }
-        }
         // stage('Получение покрытия') {
         //     steps {
         //         timestamps {
@@ -141,34 +141,35 @@ def call(Map buildEnv){
         //         }
         //     }
         // }
-        stage('Сканер') {
-            steps {
-                timestamps {
-                    script {
-                    // dir('Repo') {
-                    withSonarQubeEnv('Sonar') {
-                    def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl -Dsonar.bsl.languageserver.enabled=false"
+            stage('Сканер') {
+                steps {
+                    timestamps {
+                        script {
+                        // dir('Repo') {
+                            withSonarQubeEnv('Sonar') {
+                                def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl -Dsonar.bsl.languageserver.enabled=false"
 
-                    if (!perf_catalog.isEmpty()) {
-                        scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
-                    }
-                    
-                    def scannerHome = tool 'SonarQube Scanner';
+                                if (!perf_catalog.isEmpty()) {
+                                    scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
+                                }
+                        
+                                def scannerHome = tool 'SonarQube Scanner';
 
-                    cmd("""
-                    @set SRC=\"${SRC}\"
-                    @echo %SRC%
-                    @call stebi g > temp_SONAR_PROJECTVERSION
-                    @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
-                    @DEL temp_SONAR_PROJECTVERSION
-                    @echo %SONAR_PROJECTVERSION%
-                    @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
-                    ${scannerHome}\\sonar-scanner\\bin ${scanner_properties} -Dfile.encoding=UTF-8
-                    """)
+                                cmd("""
+                                @set SRC=\"${SRC}\"
+                                @echo %SRC%
+                                @call stebi g > temp_SONAR_PROJECTVERSION
+                                @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
+                                @DEL temp_SONAR_PROJECTVERSION
+                                @echo %SONAR_PROJECTVERSION%
+                                @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
+                                ${scannerHome}\\sonar-scanner\\bin ${scanner_properties} -Dfile.encoding=UTF-8
+                                """)
 
-                    PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
-                    // }
-                    }
+                                PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
+                        // }
+                            }
+                        }
                     }
                 }
             }
