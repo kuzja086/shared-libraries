@@ -10,16 +10,19 @@ def call(Map buildEnv){
 
         post { // Выполняется после сборки
             // Варианты в документации
-            failure {
-               sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
-            }
+            // failure {
+            //    sendEmailMessage("Failed", buildEnv.emailForNotification) // Научиться отправлять почту и добавить условие истина
+            // }
         }
 
         environment {
             // Заполнить параметры для пайплайна
             // TODO Добавить комментарий, Обязательный или НЕТ
             def CURRENT_CATALOG  = pwd()
+            def MEMORY_FOR_JAVA = getParametrValue(buildEnv, 'memoryForJava')
+            def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
+            def projectNameEDT = getParameterVlue(buildEnv, 'projectNameEDT')
         }
 
         options {
@@ -28,17 +31,42 @@ def call(Map buildEnv){
         }
 
         stages{
-            stage('Checkout') {
+            stage('Checkout and Initialization') {
                 steps {
                     timestamps {
                         script {
                             def utils = new Utils()
 
                             utils.checkoutSCM(buildEnv)
+
+                            CURRENT_CATALOG = pwd()
+                            TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
+                            
+                            // создаем/очищаем временный каталог
+                            dir(TEMP_CATALOG) {
+                            deleteDir()
+                                writeFile file: 'acc.json', text: '{"issues": []}'
+                                writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
+                                writeFile file: 'edt.json', text: '{"issues": []}'
+                            }
+
+                            GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json,${TEMP_CATALOG}/edt.json"
                         }
                     }
                 }
             }
+            stage('bsl-language-server') {
+            steps {
+                timestamps {
+                    script {
+                        BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
+                        BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
+
+                        cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"./${projectNameEDT}/src\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\"")
+                    }
+                }
+            }
+        }
             //stage('АПК') {
            // steps {
            //     timestamps {
@@ -64,15 +92,6 @@ def call(Map buildEnv){
         //         }
         //     }
         // }
-        stage('bsl-language-server') {
-            steps {
-                timestamps {
-                    script {
-                    cmd("java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"./Repo/${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\"")
-                    }
-                }
-            }
-        }
         // stage('Конвертация результатов EDT') {
         //     steps {
         //         timestamps {
