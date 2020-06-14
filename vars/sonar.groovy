@@ -43,14 +43,14 @@ def call(Map buildEnv){
                             RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
                             
                             // создаем/очищаем временный каталог
-                            dir(TEMP_CATALOG) {
+                            dir(RESULT_CATALOG) {
                             deleteDir()
                                 writeFile file: 'acc.json', text: '{"issues": []}'
                                 writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                                 writeFile file: 'edt.json', text: '{"issues": []}'
                             }
 
-                            GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json,${TEMP_CATALOG}/edt.json"
+                            GENERIC_ISSUE_JSON ="${RESULT_CATALOG}/acc.json,${RESULT_CATALOG}/bsl-generic-json.json,${RESULT_CATALOG}/edt.json"
                            
                             SRC = "./${projectNameEDT}/src"
                         }
@@ -113,7 +113,8 @@ def call(Map buildEnv){
             steps {
                 timestamps {
                     script {
-                        STEBI_SETTINGS =  './Sonar/settings.json'
+                        STEBI_SETTINGS =  "${toolsTargetDir}.settings.json"
+
                         cmd("""
                         set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
                         set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
@@ -140,43 +141,47 @@ def call(Map buildEnv){
         //         }
         //     }
         // }
-        // stage('Сканер') {
-        //     steps {
-        //         timestamps {
-        //             script {
-        //             dir('Repo') {
-        //             withSonarQubeEnv('Sonar') {
-        //             def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${PROJECT_KEY} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl -Dsonar.bsl.languageserver.enabled=false"
-        //             if (!perf_catalog.isEmpty()) {
-        //                 scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${TEMP_CATALOG}\\genericCoverage.xml\""
-        //             }
-        //             def scannerHome = tool 'SonarQube Scanner';
-        //             cmd("""
-        //             @set SRC=\"${SRC}\"
-        //             @echo %SRC%
-        //             @call stebi g > temp_SONAR_PROJECTVERSION
-        //             @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
-        //             @DEL temp_SONAR_PROJECTVERSION
-        //             @echo %SONAR_PROJECTVERSION%
-        //             @set JAVA_HOME=${sonar_catalog}\\jdk\\
-        //             @set SONAR_SCANNER_OPTS=-Xmx6g
-        //             ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
-        //             """)
-        //             PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${PROJECT_KEY}"
-        //             }
+        stage('Сканер') {
+            steps {
+                timestamps {
+                    script {
+                    // dir('Repo') {
+                    withSonarQubeEnv('Sonar') {
+                    def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% 
+                        -Dsonar.projectKey=${projectNameEDT} 
+                        -Dsonar.sources=\"${SRC}\" 
+                        -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} 
+                        -Dsonar.sourceEncoding=UTF-8 
+                        -Dsonar.inclusions=**/*.bsl 
+                        -Dsonar.bsl.languageserver.enabled=false"
 
-        //             if (!rocket_channel.isEmpty() ) {
-        //                 def qg = waitForQualityGate()
-        //                 rocketSend channel: rocket_channel, message: "Sonar check completed: [${env.JOB_NAME} ${env.BUILD_NUMBER}](${env.JOB_URL}) STATUS: [${qg.status}](${PROJECT_URL})", rawMessage: true
-        //                 }
-        //             }
-        //             }
-        //         }
-        //     }
+                    if (!perf_catalog.isEmpty()) {
+                        scanner_properties = "${scanner_properties} 
+                            -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
+                    }
+                    
+                    def scannerHome = tool 'SonarQube Scanner';
+
+                    cmd("""
+                    @set SRC=\"${SRC}\"
+                    @echo %SRC%
+                    @call stebi g > temp_SONAR_PROJECTVERSION
+                    @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
+                    @DEL temp_SONAR_PROJECTVERSION
+                    @echo %SONAR_PROJECTVERSION%
+                    @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
+                    ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
+                    """)
+
+                    PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
+                    // }
+                    }
+                    }
+                }
+            }
         }
     }
 }
-
 
 def call(){
     call([:])
