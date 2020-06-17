@@ -114,7 +114,7 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            STEBI_SETTINGS = "${toolsTargetDir}/settings.json"
+                            STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
                             
                             def utils = new Utils()
                             utils.cmd("""
@@ -153,7 +153,6 @@ def call(Map buildEnv){
 
                                 // if (!perf_catalog.isEmpty()) {
                                 //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
-                                // }
                         
                                 def scannerHome = tool 'SonarQube Scanner';
 
@@ -167,11 +166,10 @@ def call(Map buildEnv){
                                 @DEL temp_SONAR_PROJECTVERSION
                                 @echo %SONAR_PROJECTVERSION%
                                 @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
-                                ${scannerHome}\\sonar-scanner\\bin ${scanner_properties} -Dfile.encoding=UTF-8
+                                ${scannerHome}\\sonar-scanner\\bin\\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
                                 """)
 
                                 PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
-                        // }
                             }
                         }
                     }
