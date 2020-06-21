@@ -52,7 +52,6 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            // TODO получение инструментов из гит
                             def utils = new Utils()
 
                             utils.checkoutSCM(buildEnv)
@@ -141,7 +140,7 @@ def call(Map buildEnv){
                                     testbase
                                 )
                             }
-
+                            // TODO Разобраться что это и доделать
                             // parallel dropDbTasks 
 						    //parallel updateDbTasks
                         // parallel backupTasks
@@ -224,6 +223,8 @@ def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
 def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString) {
     stage("Запуск 1с обработки на ${infobase}") {
         timestamps {
+            // TODO Запуск начала замеров покрытия
+            // coverage-cli start --infobase test_pb_test --output C:\temp\coverage.csv --debugger http://192.168.0.112:2450
             def projectHelpers = new ProjectHelpers()
             projectHelpers.unlocking1cBase(testbaseConnString, base1CCredentialID)
         }
@@ -235,6 +236,11 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
         timestamps {
             def projectHelpers = new ProjectHelpers()
             projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase)        
+            // TODO Остановка замеров и покрытия и их конвертация
+            // coverage-cli stop 
+            // Конвертацию сделать в Pipeline sonar
+            // coverage-cli convert --input C:\temp\coverage.csv --output C:\temp\coveredLines.xml --sources D:\1c\workspace\pb_sonar\pb\src --format EDT
+
         }
     }
     //TODO Сделать дымовые и другие тесты
