@@ -75,6 +75,7 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
+                            utils = new Utils()
                             for (i = 0;  i < templatebasesList.size(); i++) {
                                 templateDb = templatebasesList[i]
                                 storage1cPath = storages1cPathList[i]
