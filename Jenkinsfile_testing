@@ -1,3 +1,17 @@
 @Library("shared-libraries")_
 
+    //'agent' : 'testserver', // Имя агента
+    //'server1c' : 'sqlserver', // Адрес сервера 1С
+    //'server1cPort' : '2440', // Порт рабочего сервера 1с. Не путать с портом агента кластера (2441)
+    //'agent1cPort' : '2441', // Порт агента кластера 1с
+    //'platform1C' : '8.3.14.1779', //Версия платформы
+    //'serverSql' : 'sqlserver\\sqlexpress', // Адрес sql сервера
+    //'templatebases' : Имя базы, обязательный параметр
+    //'storages1cPath' : путь к хранилищу, если нужно
+    //'tempCatalog' : "${CURRENT_CATALOG}\\temp", // Служебный каталог
+    //'base1CCredentialID' : CredentialsID для Базы
+    //'storages1cCredentalsID' : CredentialsID для хранилища
+    //'sqlCredentialsID' : CredentialsID для SQL
+    //'serverCopyPath' : '\\\\sqlserver\\temp_for_1c$\\Kozynskiy\\jenkins', 
+
 testing()
