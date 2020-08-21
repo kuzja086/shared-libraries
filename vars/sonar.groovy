@@ -24,6 +24,7 @@ def call(Map buildEnv){
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
             def perf_catalog = getParametrValue(buildEnv, 'perf_catalog')
+            def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
         }
 
         options {
@@ -54,6 +55,8 @@ def call(Map buildEnv){
                             GENERIC_ISSUE_JSON ="${RESULT_CATALOG}/acc.json,${RESULT_CATALOG}/bsl-generic-json.json,${RESULT_CATALOG}/edt.json"
                            
                             SRC = "./${projectNameEDT}/src"
+
+                            EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}/edt-validation.csv"
                         }
                     }
                 }
