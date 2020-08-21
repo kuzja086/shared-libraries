@@ -40,7 +40,7 @@ def getDefaultParams(){
         'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension", // Путь к выгрузке файлов расширения
 
         // EDT
-        'edtVersion' : '2020.3', // Версия EDT
+        'edtVersion' : '2020.5', // Версия EDT
         'projectNameEDT' : 'projectNameEDT', // Имя проекта в EDT
 
         // Тестирование
@@ -54,6 +54,5 @@ def getDefaultParams(){
         //Sonar
         'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
         'perf_catalog' : '' // Каталог для замеров производительности
-    
     ]
 }
