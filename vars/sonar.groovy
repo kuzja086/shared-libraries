@@ -89,10 +89,11 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
+                        def utils = new Utils()
                         if (fileExists("${EDT_VALIDATION_RESULT}")) {
-                                cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
+                               utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
                             }
-                            cmd("""
+                            utils.cmd("""
                             @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
                             ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectNameEDT}\"
                             """)
