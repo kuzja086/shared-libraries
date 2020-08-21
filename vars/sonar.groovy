@@ -58,6 +58,8 @@ def call(Map buildEnv){
                             SRC = "./${projectNameEDT}/src"
 
                             EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}/edt-validation.csv"
+                            workspacelocation = ${CURRENT_CATALOG}
+                            projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
                         }
                     }
                 }
@@ -95,7 +97,7 @@ def call(Map buildEnv){
                             }
                             utils.cmd("""
                             @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-                            ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectNameEDT}\"
+                            ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
                             """)
                         }
                     }
