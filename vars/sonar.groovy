@@ -25,6 +25,7 @@ def call(Map buildEnv){
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
             def perf_catalog = getParametrValue(buildEnv, 'perf_catalog')
             def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
+            def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')
         }
 
         options {
@@ -93,7 +94,7 @@ def call(Map buildEnv){
                             }
                             cmd("""
                             @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-                            ring edt@${EDT_VERSION} workspace validate --workspace-location \"${TEMP_CATALOG}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${PROJECT_NAME_EDT}\"
+                            ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${PROJECT_NAME_EDT}\"
                             """)
                         }
                     }
