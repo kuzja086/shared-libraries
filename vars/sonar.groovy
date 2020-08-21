@@ -57,7 +57,7 @@ def call(Map buildEnv){
                            
                             SRC = "./${projectNameEDT}/src"
 
-                            EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}/edt-validation.csv"
+                            EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}\edt-validation.csv"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
                         }
                     }
@@ -102,38 +102,44 @@ def call(Map buildEnv){
                     }
                 }
             }
-        // stage('Конвертация результатов EDT') {
-        //     steps {
-        //         timestamps {
-        //             script {
-        //             dir('Repo') {
-        //                 cmd("""
-        //                 set SRC=\"${SRC}\"
-        //                 stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${TEMP_CATALOG}/edt.json\" 
-        //                 """)
-        //             }
-        //             }
-        //         }
-        //     }
-        // }
-            // stage('Трансформация результатов') {
-            //     steps {
-            //         timestamps {
-            //             script {
-            //                 STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
+            stage('Конвертация результатов EDT') {
+                agent {
+                    label 'FirstNode'
+                }
+                steps {
+                    timestamps {
+                        script {
+                        dir('Repo') {
+                            cmd("""
+                            set SRC=\"${SRC}\"
+                            stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${TEMP_CATALOG}/edt.json\" 
+                            """)
+                        }
+                        }
+                    }
+                }
+            }
+            stage('Трансформация результатов') {
+                agent {
+                    label 'FirstNode'
+                }
+                steps {
+                    timestamps {
+                        script {
+                            STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
                             
-            //                 def utils = new Utils()
-            //                 utils.cmd("""
-            //                 set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
-            //                 set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
-            //                 set SRC=${SRC}
+                            def utils = new Utils()
+                            utils.cmd("""
+                            set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
+                            set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
+                            set SRC=${SRC}
 
-            //                 stebi transform -r=0
-            //                 """)
-            //             }
-            //         }
-            //     }
-            // }
+                            stebi transform -r=0
+                            """)
+                        }
+                    }
+                }
+            }
         // stage('Получение покрытия') {
         //     steps {
         //         timestamps {
