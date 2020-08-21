@@ -57,7 +57,7 @@ def call(Map buildEnv){
                            
                             SRC = "./${projectNameEDT}/src"
 
-                            EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}\edt-validation.csv"
+                            EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}\\edt-validation.csv"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
                         }
                     }
