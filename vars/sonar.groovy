@@ -42,7 +42,8 @@ def call(Map buildEnv){
 
                             if (oneAgent.trim().equals("true")) {
                                 RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
-                            else
+                                }
+                            else {
                                 RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
                                 toolsTargetDir = "${toolsTargetDir}\\tools"
                             }
