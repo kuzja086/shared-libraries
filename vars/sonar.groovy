@@ -38,13 +38,18 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
+                            CURRENT_CATALOG = pwd()
+
+                            if (oneAgent.trim().equals("true")) {
+                                RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
+                            else
+                                RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
+                                toolsTargetDir = "${toolsTargetDir}\\tools"
+                            }
                             def utils = new Utils()
 
                             utils.checkoutSCM(buildEnv)
-
-                            CURRENT_CATALOG = pwd()
-                            RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
-                            
+  
                             // создаем/очищаем временный каталог
                             dir(RESULT_CATALOG) {
                             deleteDir()
@@ -57,7 +62,7 @@ def call(Map buildEnv){
                            
                             SRC = "./${projectNameEDT}/src"
 
-                            EDT_VALIDATION_RESULT = "${tempCatalpgOtherDisc}\\edt-validation.csv"
+                            EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
                         }
                     }
@@ -92,9 +97,9 @@ def call(Map buildEnv){
                         script {
                         def utils = new Utils()
                         if (fileExists("${EDT_VALIDATION_RESULT}")) {
-                               utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
-                            }
-                            utils.cmd("""
+                            utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
+                        }
+                        utils.cmd("""
                             @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
                             ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
                             """)
@@ -109,12 +114,15 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                        dir('Repo') {
+                            if (oneAgent.trim().equals("true")) {
+                                def utils = new Utils()
+                                utils.checkoutSCM(buildEnv)
+                            }
+
                             cmd("""
                             set SRC=\"${SRC}\"
-                            stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${TEMP_CATALOG}/edt.json\" 
+                            stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
                             """)
-                        }
                         }
                     }
                 }

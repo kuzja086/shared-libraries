@@ -39,7 +39,7 @@ def getDefaultParams(){
         'extension' : "extension", // Имя расширения по умолчанию
         'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension", // Путь к выгрузке файлов расширения
         'tempCatalpgOtherDisc' : 'P:\\Козинский\\', // Временный каталог на другом диске
-        
+
         // EDT
         'edtVersion' : '2020.5', // Версия EDT
         'projectNameEDT' : 'projectNameEDT', // Имя проекта в EDT
@@ -54,6 +54,7 @@ def getDefaultParams(){
 
         //Sonar
         'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
+        'oneAgent' : "false", // Пайплайн выполняется на одном агенте
         'perf_catalog' : '' // Каталог для замеров производительности
     ]
 }
