@@ -26,6 +26,7 @@ def call(Map buildEnv){
             def perf_catalog = getParametrValue(buildEnv, 'perf_catalog')
             def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
             def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')
+            def oneAgent = getParametrValue(buildEnv, 'oneAgent')
         }
 
         options {
