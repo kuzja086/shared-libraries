@@ -116,12 +116,13 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
+                            def utils = new Utils()
+                            
                             if (oneAgent.trim().equals("true")) {
-                                def utils = new Utils()
                                 utils.checkoutSCM(buildEnv)
                             }
 
-                            cmd("""
+                            utils.cmd("""
                             set SRC=\"${SRC}\"
                             stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
                             """)
