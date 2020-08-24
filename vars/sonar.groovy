@@ -166,38 +166,38 @@ def call(Map buildEnv){
         //         }
         //     }
         // }
-            // stage('Сканер') {
-            //     steps {
-            //         timestamps {
-            //             script {
-            //             // dir('Repo') {
-            //                 withSonarQubeEnv('Sonar') {
-            //                     def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl -Dsonar.bsl.languageserver.enabled=false"
+            stage('Сканер') {
+                steps {
+                    timestamps {
+                        script {
+                        // dir('Repo') {
+                            withSonarQubeEnv('Sonar') {
+                                def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
 
-            //                     // if (!perf_catalog.isEmpty()) {
-            //                     //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
+                                // if (!perf_catalog.isEmpty()) {
+                                //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
                         
-            //                     def scannerHome = tool 'SonarQube Scanner';
+                                def scannerHome = tool 'SonarQube Scanner';
 
-            //                     def utils = new Utils()
+                                def utils = new Utils()
 
-            //                     utils.cmd("""
-            //                     @set SRC=\"${SRC}\"
-            //                     @echo %SRC%
-            //                     @call stebi g > temp_SONAR_PROJECTVERSION
-            //                     @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
-            //                     @DEL temp_SONAR_PROJECTVERSION
-            //                     @echo %SONAR_PROJECTVERSION%
-            //                     @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
-            //                     ${scannerHome}\\sonar-scanner\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
-            //                     """)
+                                utils.cmd("""
+                                @set SRC=\"${SRC}\"
+                                @echo %SRC%
+                                @call stebi g > temp_SONAR_PROJECTVERSION
+                                @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
+                                @DEL temp_SONAR_PROJECTVERSION
+                                @echo %SONAR_PROJECTVERSION%
+                                @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
+                                ${scannerHome}\\sonar-scanner\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
+                                """)
 
-            //                     PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
+                                PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
