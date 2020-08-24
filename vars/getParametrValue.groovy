@@ -38,7 +38,7 @@ def getDefaultParams(){
         'saveExtensionInFile' : 'false', // Сохранить расширение в файл *.cfe
         'extension' : "extension", // Имя расширения по умолчанию
         'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension", // Путь к выгрузке файлов расширения
-        'tempCatalpgOtherDisc' : 'P:\\Козинский\\', // Временный каталог на другом диске
+        'tempCatalpgOtherDisc' : 'P:\\Козинский', // Временный каталог на другом диске
 
         // EDT
         'edtVersion' : '2020.5', // Версия EDT

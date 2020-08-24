@@ -184,10 +184,6 @@ def call(Map buildEnv){
                                 utils.cmd("""
                                 @set SRC=\"${SRC}\"
                                 @echo %SRC%
-                                @call stebi g > temp_SONAR_PROJECTVERSION
-                                @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
-                                @DEL temp_SONAR_PROJECTVERSION
-                                @echo %SONAR_PROJECTVERSION%
                                 @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
                                 ${scannerHome}\\sonar-scanner\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
                                 """)
