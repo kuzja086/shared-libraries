@@ -49,6 +49,7 @@ def call(Map buildEnv){
             def serverCopyPath = getParametrValue(buildEnv, 'serverCopyPath') // * Обязательный
             def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
             def debugger = getParametrValue(buildEnv, 'debugger')
+            def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
         }
 
         stages{
