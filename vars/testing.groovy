@@ -28,7 +28,9 @@ def call(Map buildEnv){
         //        sendEmailMessage("Failed", getParametrValue(buildEnv, 'emailForNotification')) // Научиться отправлять почту и добавить условие истина
         //     }
         // }
-
+        options {
+            timeout(time: 8, unit: 'HOURS') 
+        }
         environment {
             // Заполнить параметры для пайплайна
             // TODO Добавить обязательные или нет с комментариями
@@ -45,6 +47,8 @@ def call(Map buildEnv){
             def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
             def sqlCredentialsID = getParametrValue(buildEnv, 'sqlCredentialsID')
             def serverCopyPath = getParametrValue(buildEnv, 'serverCopyPath') // * Обязательный
+            def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
+            def debugger = getParametrValue(buildEnv, 'debugger')
         }
 
         stages{
@@ -64,6 +68,8 @@ def call(Map buildEnv){
                             
                             testbase = null
 
+                            coverageFile = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}\\genericCoverage.xml"
+                            
                             dir ('build') {
                                 writeFile file:'dummy', text:''
                             }
@@ -130,7 +136,9 @@ def call(Map buildEnv){
                                 runHandlers1cTask(
                                     testbase, 
                                     base1CCredentialID,
-                                    testbaseConnString
+                                    testbaseConnString,
+                                    coverageFile,
+                                    debugger
                                 )
                                 // 7. Тестирование Vanessa
                                 test1C(
@@ -221,12 +229,17 @@ def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
     }
 }
 
-def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString) {
+def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverageFile, debugger) {
     stage("Запуск 1с обработки на ${infobase}") {
         timestamps {
             // TODO Запуск начала замеров покрытия
             // coverage-cli start --infobase test_pb_test --output C:\temp\coverage.csv --debugger http://192.168.0.112:2450
             def projectHelpers = new ProjectHelpers()
+            utils = new Utils()
+
+            utils.cmd("""
+            coverage-cli start --infobase \"${infobase}\" --output \"${coverageFile}\" --debugger \"${debugger}\"  
+            """)
             projectHelpers.unlocking1cBase(testbaseConnString, base1CCredentialID)
         }
     }

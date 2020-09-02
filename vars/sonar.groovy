@@ -23,7 +23,6 @@ def call(Map buildEnv){
             def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
-            def perf_catalog = getParametrValue(buildEnv, 'perf_catalog')
             def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
             def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')
             def oneAgent = getParametrValue(buildEnv, 'oneAgent')
@@ -66,6 +65,8 @@ def call(Map buildEnv){
 
                             EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
+
+                            perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
                         }
                     }
                 }
@@ -151,21 +152,22 @@ def call(Map buildEnv){
                     }
                 }
             }
-        // stage('Получение покрытия') {
-        //     steps {
-        //         timestamps {
-        //             script {
-        //              if (!perf_catalog.isEmpty()) {
-        //                 dir('Repo') {
-        //                     cmd("perf-measurements-to-cover c -i=${perf_catalog} -o=\"${TEMP_CATALOG}\\genericCoverage.xml\" -s=\"${SRC}\"")
-        //                 }
-        //             } else{
-        //                 echo "skip"
-        //             }
-        //             }
-        //         }
-        //     }
-        // }
+            // stage('Получение покрытия') {
+            //     agent {
+            //         label 'FirstNode'
+            //     }
+            //     steps {
+            //         timestamps {
+            //             script {
+            //             if (!perf_catalog.isEmpty()) {
+            //                     cmd("perf-measurements-to-cover c -i=${perf_catalog} -o=\"${perf_catalog}\\genericCoverage.xml\" -s=\"${SRC}\"")
+            //             } else{
+            //                 echo "skip"
+            //             }
+            //             }
+            //         }
+            //     }
+            // }
             stage('Сканер') {
                 steps {
                     timestamps {
@@ -174,9 +176,10 @@ def call(Map buildEnv){
                             withSonarQubeEnv('Sonar') {
                                 def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
 
-                                // if (!perf_catalog.isEmpty()) {
-                                //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${RESULT_CATALOG}\\genericCoverage.xml\""
-                        
+                                if (!perf_catalog.isEmpty()) {
+                                    scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${perf_catalog}\\genericCoverage.xml\""
+                                }
+
                                 def scannerHome = tool 'SonarQube Scanner';
 
                                 def utils = new Utils()

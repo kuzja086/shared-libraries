@@ -45,6 +45,7 @@ def getDefaultParams(){
         'projectNameEDT' : 'projectNameEDT', // Имя проекта в EDT
 
         // Тестирование
+        'debugger' : 'http://192.168.0.112:2450', // Адрес сервера отладки
 
         //Git
         'toolsBranch' : 'master', // Ветка Git по умолчанию
@@ -54,7 +55,6 @@ def getDefaultParams(){
 
         //Sonar
         'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
-        'oneAgent' : "false", // Пайплайн выполняется на одном агенте
-        'perf_catalog' : '' // Каталог для замеров производительности
+        'oneAgent' : "false" // Пайплайн выполняется на одном агенте
     ]
 }
