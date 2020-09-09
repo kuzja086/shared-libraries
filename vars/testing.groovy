@@ -70,6 +70,8 @@ def call(Map buildEnv){
                             testbase = null
 
                             coverageFile = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}\\genericCoverage.xml"
+                            coverageFileOutput =  "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}\\coveredLines.xml"
+                            SRC = "./${projectNameEDT}/src"
                             
                             dir ('build') {
                                 writeFile file:'dummy', text:''
@@ -236,7 +238,7 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverage
             // TODO Запуск начала замеров покрытия
             // coverage-cli start --infobase test_pb_test --output C:\temp\coverage.csv --debugger http://192.168.0.112:2450
             def projectHelpers = new ProjectHelpers()
-            utils = new Utils()
+            def utils = new Utils()
 
             utils.cmd("""
             coverage-cli start --infobase \"${infobase}\" --output \"${coverageFile}\" --debugger \"${debugger}\"  
@@ -250,7 +252,13 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
     stage("Тестирование Vanessa") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
+            def utils = new Utils()
+            
             projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase)        
+            utils.cmd("""
+            coverage-cli stop 
+            coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
+            """)
             // TODO Остановка замеров и покрытия и их конвертация
             // coverage-cli stop 
             // Конвертацию сделать в Pipeline sonar
