@@ -46,6 +46,7 @@ def getDefaultParams(){
 
         // Тестирование
         'debugger' : 'http://192.168.0.112:2450', // Адрес сервера отладки
+        'runTesting' : 'true', // Проводить тестирование
 
         //Git
         'toolsBranch' : 'master', // Ветка Git по умолчанию
@@ -55,6 +56,7 @@ def getDefaultParams(){
 
         //Sonar
         'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
-        'oneAgent' : "false" // Пайплайн выполняется на одном агенте
+        'oneAgent' : 'false', // Пайплайн выполняется на одном агенте
+        'runSonar' : 'true' // Запускать проверку в SonarQube
     ]
 }

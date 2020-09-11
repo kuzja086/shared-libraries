@@ -50,6 +50,8 @@ def call(Map buildEnv){
             def tempCatalpgOtherDisc = getParametrValue(buildEnv, 'tempCatalpgOtherDisc')
             def debugger = getParametrValue(buildEnv, 'debugger')
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
+            def runTesting = getParametrValue(buildEnv, 'runTesting')
+            def runSonar = getParametrValue(buildEnv, 'runSonar')
         }
 
         stages{
@@ -86,71 +88,92 @@ def call(Map buildEnv){
                         script {
                             utils = new Utils()
                             for (i = 0;  i < templatebasesList.size(); i++) {
-                                templateDb = templatebasesList[i]
-                                storage1cPath = storages1cPathList[i]
-                                testbase = "test_${templateDb}"
-                                templateDbConnString = utils.getConnectionString(buildEnv)
-                                testbaseConnString = utils.getConnectionString(buildEnv, testbase)
-                                backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
+                                stage("Подготовка к тестированию") {
+                                    timestamps {
+                                        if (runTesting.trim().equals("true")) {
+                                            templateDb = templatebasesList[i]
+                                            storage1cPath = storages1cPathList[i]
+                                            testbase = "test_${templateDb}"
+                                            templateDbConnString = utils.getConnectionString(buildEnv)
+                                            testbaseConnString = utils.getConnectionString(buildEnv, testbase)
+                                            backupPath = "${serverCopyPath}/temp_${templateDb}_${utils.currentDateStamp()}"
 
-                                // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
-                                dropDbTask(
-                                    server1c, 
-                                    server1cPort, 
-                                    serverSql, 
-                                    testbase,
-                                    base1CCredentialID,
-                                    sqlCredentialsID
-                                )
+                                            // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
+                                            dropDbTask(
+                                                server1c, 
+                                                server1cPort, 
+                                                serverSql, 
+                                                testbase,
+                                                base1CCredentialID,
+                                                sqlCredentialsID
+                                            )
 
-                                // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
-                                updateDbTask(
-                                    platform1c,
-                                    templateDb, 
-                                    storage1cPath, 
-                                    storages1cCredentalsID, 
-                                    templateDbConnString, 
-                                    base1CCredentialID
-                                )
+                                            // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
+                                            updateDbTask(
+                                                platform1c,
+                                                templateDb, 
+                                                storage1cPath, 
+                                                storages1cCredentalsID, 
+                                                templateDbConnString, 
+                                                base1CCredentialID
+                                            )
 
-                                 // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
-                                backupTask(
-                                    serverSql, 
-                                    templateDb, 
-                                    backupPath,
-                                    sqlCredentialsID
-                                )
-                                // 4. Загружаем sql бекап эталонной базы в тестовую
-                                restoreTask(
-                                    serverSql, 
-                                    testbase, 
-                                    backupPath,
-                                    sqlCredentialsID
-                                )
-                                // 5. Создаем тестовую базу кластере 1С
-                                createDbTask(
-                                    "${server1c}:${agent1cPort}",
-                                    serverSql,
-                                    platform1c,
-                                    testbase,
-                                    sqlCredentialsID
-                                )
-                                // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
-                                runHandlers1cTask(
-                                    testbase, 
-                                    base1CCredentialID,
-                                    testbaseConnString,
-                                    coverageFile,
-                                    debugger
-                                )
-                                // 7. Тестирование Vanessa
-                                test1C(
-                                    platform1c,
-                                    base1CCredentialID,
-                                    testbaseConnString,
-                                    "${server1c}:${agent1cPort}",
-                                    testbase
-                                )
+                                            // 3. Делаем sql бекап эталонной базы, которую будем загружать в тестовую базу
+                                            backupTask(
+                                                serverSql, 
+                                                templateDb, 
+                                                backupPath,
+                                                sqlCredentialsID
+                                            )
+
+                                            // 4. Загружаем sql бекап эталонной базы в тестовую
+                                            restoreTask(
+                                                serverSql, 
+                                                testbase, 
+                                                backupPath,
+                                                sqlCredentialsID
+                                            )
+
+                                            // 5. Создаем тестовую базу кластере 1С
+                                            createDbTask(
+                                                "${server1c}:${agent1cPort}",
+                                                serverSql,
+                                                platform1c,
+                                                testbase,
+                                                sqlCredentialsID
+                                            )
+                                        }
+                                    }
+                                }
+                                stage("Тестирование Vanessa"){
+                                    if (runTesting.trim().equals("true")) {
+                                        timestamps {
+                                            // 6. Запускаем внешнюю обработку 1С, которая очищает базу от всплывающего окна с тем, что база перемещена при старте 1С
+                                            runHandlers1cTask(
+                                                testbase, 
+                                                base1CCredentialID,
+                                                testbaseConnString,
+                                                coverageFile,
+                                                debugger
+                                            )
+
+                                            // 7. Тестирование Vanessa
+                                            test1C(
+                                                platform1c,
+                                                base1CCredentialID,
+                                                testbaseConnString,
+                                                "${server1c}:${agent1cPort}",
+                                                testbase
+                                            )
+                                        }
+                                    }    
+                                }
+                                stage("Sonar")
+                                {
+                                    if (runSonar.trim().equals("true")) {
+                                    }
+
+                                }       
                             }
                             // TODO Разобраться что это и доделать
                             // parallel dropDbTasks 
@@ -173,16 +196,16 @@ def call(){
 }
 
 def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
-    stage("Удаление ${infobase}") {
+    // stage("Удаление ${infobase}") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
             projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
         }
-    }
+    // }
 }
 
 def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, connString, base1CCredentialID) {
-    stage("Загрузка из хранилища ${infobase}") {
+    // stage("Загрузка из хранилища ${infobase}") {
         timestamps {
             prHelpers = new ProjectHelpers()
             if (storage1cPath.trim().equals("null")) {
@@ -192,22 +215,22 @@ def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, co
             prHelpers.loadCfgFrom1CStorage(storage1cPath, storages1cCredentalsID, connString, base1CCredentialID)
             prHelpers.updateInfobase(connString, base1CCredentialID, platform1c)
         }
-    }
+    // }
 }
 
 def backupTask(serverSql, infobase, backupPath, sqlCredentialsID) {
-    stage("sql бекап ${infobase}") {
+    // stage("sql бекап ${infobase}") {
         timestamps {
             def sqlUtils = new SqlUtils()
 
             sqlUtils.checkDb(serverSql, infobase, sqlCredentialsID)
             sqlUtils.backupDb(serverSql, infobase, backupPath, sqlCredentialsID)
         }
-    }
+    // }
 }
 
 def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
-    stage("Востановление ${infobase} бекапа") {
+    // stage("Востановление ${infobase} бекапа") {
             timestamps {
             sqlUtils = new SqlUtils()
             utils = new Utils()
@@ -216,11 +239,11 @@ def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
             sqlUtils.restoreDb(serverSql, infobase, backupPath, sqlCredentialsID)
             sqlUtils.clearBackups(backupPath)
         }
-    }
+    // }
 }
 
 def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
-    stage("Создание базы ${infobase}") {
+    // stage("Создание базы ${infobase}") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
             try {
@@ -229,11 +252,11 @@ def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
                 echo "Error happened when creating base ${infobase}. Probably base already exists in the ibases.v8i list. Skip the error"
             }
         }
-    }
+    // }
 }
 
 def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverageFile, debugger) {
-    stage("Запуск 1с обработки на ${infobase}") {
+    // stage("Запуск 1с обработки на ${infobase}") {
         timestamps {
             // TODO Запуск начала замеров покрытия
             // coverage-cli start --infobase test_pb_test --output C:\temp\coverage.csv --debugger http://192.168.0.112:2450
@@ -245,11 +268,11 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverage
             """)
             projectHelpers.unlocking1cBase(testbaseConnString, base1CCredentialID)
         }
-    }
+    // }
 }
 
 def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase){
-    stage("Тестирование Vanessa") {
+    // stage("Тестирование Vanessa") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
             def utils = new Utils()
@@ -265,6 +288,6 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
             // coverage-cli convert --input C:\temp\coverage.csv --output C:\temp\coveredLines.xml --sources D:\1c\workspace\pb_sonar\pb\src --format EDT
 
         }
-    }
+    // }
     //TODO Сделать дымовые и другие тесты
 }
