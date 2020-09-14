@@ -168,12 +168,27 @@ def call(Map buildEnv){
                                         }
                                     }    
                                 }
-                                stage("Sonar")
+                                stage("Sonar Initialization")
                                 {
                                     if (runSonar.trim().equals("true")) {
+                                        
                                     }
 
-                                }       
+                                }
+                                stage("Sonar Cheking")
+                                {
+                                    if (runSonar.trim().equals("true")) {
+                                        
+                                    }
+
+                                } 
+                                 stage("Sonar Scanner")
+                                {
+                                    if (runSonar.trim().equals("true")) {
+                                        
+                                    }
+
+                                }        
                             }
                             // TODO Разобраться что это и доделать
                             // parallel dropDbTasks 
