@@ -87,9 +87,6 @@ def call(Map buildEnv){
                 }
             }
             stage("Запуск") {
-                agent { 
-                                        label 'FirstNode'
-                                    }
                 steps {
                     timestamps {
                         script {
@@ -174,8 +171,20 @@ def call(Map buildEnv){
                                             )
                                         }
                                     }    
-                                }
-                                stage("Sonar Initialization")
+                                }       
+                            }
+                            // TODO Разобраться что это и доделать
+                            // parallel dropDbTasks 
+						    //parallel updateDbTasks
+                        // parallel backupTasks
+                        //                         parallel restoreTasks
+                        //                         parallel createDbTasks
+                        //                         parallel runHandlers1cTasks
+                        }
+                    }
+                }
+            }
+            stage("Sonar Initialization")
                                 {
                                     if (runSonar.trim().equals("true")) {
                                             CURRENT_CATALOG = pwd()
@@ -211,6 +220,9 @@ def call(Map buildEnv){
 
                                 }
                                 stage("Sonar Cheking"){
+                                    agent {
+                        label 'FirstNode'
+                    }
                                     if (runSonar.trim().equals("true")) {
                                         
                                         edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
@@ -223,19 +235,7 @@ def call(Map buildEnv){
                                         
                                     }
 
-                                }        
-                            }
-                            // TODO Разобраться что это и доделать
-                            // parallel dropDbTasks 
-						    //parallel updateDbTasks
-                        // parallel backupTasks
-                        //                         parallel restoreTasks
-                        //                         parallel createDbTasks
-                        //                         parallel runHandlers1cTasks
-                        }
-                    }
-                }
-            }
+                                } 
         }
     }
 }
