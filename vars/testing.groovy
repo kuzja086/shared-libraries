@@ -209,10 +209,11 @@ def call(Map buildEnv){
                                 }
                                 stage("Sonar Cheking")
                                 {
+                                    agent { 
+                                        label 'FirstNode'
+                                    }
                                     if (runSonar.trim().equals("true")) {
-                                        // agent { 
-                                        //     label 'FirstNode'
-                                        // }
+                                        
                                         edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
                                     }
 
