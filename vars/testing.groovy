@@ -223,12 +223,14 @@ def call(Map buildEnv){
                                     agent {
                         label 'FirstNode'
                     }
+                     steps {
                                     if (runSonar.trim().equals("true")) {
                                         
                                         edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
                                     }
 
                                 } 
+                                }
                                  stage("Sonar Scanner")
                                 {
                                     if (runSonar.trim().equals("true")) {
