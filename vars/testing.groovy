@@ -223,7 +223,7 @@ def call(Map buildEnv){
             }
             stage("Sonar Cheking"){
                 agent {
-                    label 'FirstNode'
+                    label 'testserver'
                 }
                 steps {
                     timestamps {
@@ -236,7 +236,16 @@ def call(Map buildEnv){
                 }
             }
             stage("Sonar Scanner"){
-                if (runSonar.trim().equals("true")) {      
+                agent {
+                    label 'testserver'
+                }
+                steps {
+                    timestamps {
+                        script {
+                            if (runSonar.trim().equals("true")) {      
+                            }
+                        }
+                    }
                 }
             }
         } 
