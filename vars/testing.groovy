@@ -52,6 +52,10 @@ def call(Map buildEnv){
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
             def runTesting = getParametrValue(buildEnv, 'runTesting')
             def runSonar = getParametrValue(buildEnv, 'runSonar')
+            def MEMORY_FOR_JAVA = getParametrValue(buildEnv, 'memoryForJava')
+            def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
+            def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
+            def oneAgent = getParametrValue(buildEnv, 'oneAgent')
         }
 
         stages{
@@ -171,7 +175,35 @@ def call(Map buildEnv){
                                 stage("Sonar Initialization")
                                 {
                                     if (runSonar.trim().equals("true")) {
+                                            CURRENT_CATALOG = pwd()
+
+                                            if (oneAgent.trim().equals("true")) {
+                                                RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
+                                                }
+                                            else {
+                                                RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
+                                                toolsTargetDir = "${toolsTargetDir}\\tools"
+                                            }
+                                            def utils = new Utils()
+
+                                            utils.checkoutSCM(buildEnv)
+                
+                                            // создаем/очищаем временный каталог
+                                            dir(RESULT_CATALOG) {
+                                            deleteDir()
+                                            writeFile file: 'acc.json', text: '{"issues": []}'
+                                                writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
+                                            writeFile file: 'edt.json', text: '{"issues": []}'
+                                            }
+
+                                            GENERIC_ISSUE_JSON ="${RESULT_CATALOG}/acc.json,${RESULT_CATALOG}/bsl-generic-json.json,${RESULT_CATALOG}/edt.json"
                                         
+                                            SRC = "./${projectNameEDT}/src"
+
+                                            EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
+                                            projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
+
+                                            perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
                                     }
 
                                 }
