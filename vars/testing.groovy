@@ -184,61 +184,56 @@ def call(Map buildEnv){
                     }
                 }
             }
-            stage("Sonar Initialization")
-                                {
-                                    if (runSonar.trim().equals("true")) {
-                                            CURRENT_CATALOG = pwd()
-
-                                            if (oneAgent.trim().equals("true")) {
-                                                RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
-                                                }
-                                            else {
-                                                RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
-                                                toolsTargetDir = "${toolsTargetDir}\\tools"
-                                            }
-                                            def utils = new Utils()
-
-                                            utils.checkoutSCM(buildEnv)
-                
-                                            // создаем/очищаем временный каталог
-                                            dir(RESULT_CATALOG) {
-                                            deleteDir()
-                                            writeFile file: 'acc.json', text: '{"issues": []}'
-                                                writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
-                                            writeFile file: 'edt.json', text: '{"issues": []}'
-                                            }
-
-                                            GENERIC_ISSUE_JSON ="${RESULT_CATALOG}/acc.json,${RESULT_CATALOG}/bsl-generic-json.json,${RESULT_CATALOG}/edt.json"
-                                        
-                                            SRC = "./${projectNameEDT}/src"
-
-                                            EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
-                                            projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
-
-                                            perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
-                                    }
-
-                                }
-                                stage("Sonar Cheking"){
-                                    agent {
-                        label 'FirstNode'
+            stage("Sonar Initialization"){
+                if (runSonar.trim().equals("true")){ 
+                    CURRENT_CATALOG = pwd()
+                    if (oneAgent.trim().equals("true")) {
+                        RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
                     }
-                     steps {
-                                    if (runSonar.trim().equals("true")) {
-                                        
-                                        edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
-                                    }
+                    else {
+                        RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
+                        toolsTargetDir = "${toolsTargetDir}\\tools"
+                    }
 
-                                } 
-                                }
-                                 stage("Sonar Scanner")
-                                {
-                                    if (runSonar.trim().equals("true")) {
-                                        
-                                    }
+                    def utils = new Utils()
+                    utils.checkoutSCM(buildEnv)
+                
+                    // создаем/очищаем временный каталог
+                    dir(RESULT_CATALOG) {
+                    deleteDir()
+                    writeFile file: 'acc.json', text: '{"issues": []}'
+                    writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
+                    writeFile file: 'edt.json', text: '{"issues": []}'
+                    }
 
-                                } 
-        }
+                    GENERIC_ISSUE_JSON ="${RESULT_CATALOG}/acc.json,${RESULT_CATALOG}/bsl-generic-json.json,${RESULT_CATALOG}/edt.json"
+                    SRC = "./${projectNameEDT}/src"
+
+                    EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
+                    projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
+
+                    perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
+                }
+            }
+            stage("Sonar Cheking"){
+                agent {
+                    label 'FirstNode'
+                }
+                steps {
+                    timestamps {
+                        script {
+                            if (runSonar.trim().equals("true")) {           
+                                edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
+                            }
+                        } 
+                    }
+                }
+            }
+            stage("Sonar Scanner"){
+                if (runSonar.trim().equals("true")) {      
+                }
+            }
+        } 
     }
 }
 
