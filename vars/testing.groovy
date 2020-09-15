@@ -235,6 +235,21 @@ def call(Map buildEnv){
                     }
                 }
             }
+            stage("Подготовка результатов"){
+                agent {
+                    label 'FirstNode'
+                }
+                steps {
+                    timestamps {
+                        script {
+                            if (runSonar.trim().equals("true")) {
+                                convertResult(SRC, EDT_VALIDATION_RESULT, RESULT_CATALOG)
+                                transformResult(toolsTargetDir, STEBI_SETTINGS, GENERIC_ISSUE_JSON, SRC)      
+                            }
+                        }
+                    }
+                }
+            }
             stage("Sonar Scanner"){
                 agent {
                     label 'testserver'
@@ -242,7 +257,8 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            if (runSonar.trim().equals("true")) {      
+                            if (runSonar.trim().equals("true")) {  
+                                sonarScaner(SRC, MEMORY_FOR_JAVA, projectNameEDT, GENERIC_ISSUE_JSON)   
                             }
                         }
                     }
@@ -355,16 +371,65 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
 }
 
 def edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName){
-    timestamps{
-        script {
-            def utils = new Utils()
-            if (fileExists("${EDT_VALIDATION_RESULT}")) {
-                utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
-            }
-            utils.cmd("""
-            @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-            ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
-            """)
+    timestamps{{
+        def utils = new Utils()
+        if (fileExists("${EDT_VALIDATION_RESULT}")) {
+            utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
         }
+        utils.cmd("""
+        @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
+        ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
+        """)
+    }
+}
+
+def convertResult(SRC, EDT_VALIDATION_RESULT, RESULT_CATALOG){
+    timestamps {
+        def utils = new Utils()
+        if (oneAgent.trim().equals("true")) {
+            utils.checkoutSCM(buildEnv)
+        }
+
+        utils.cmd("""
+        set SRC=\"${SRC}\"
+        stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
+        """)
+    }
+}
+
+def transformResult(toolsTargetDir, STEBI_SETTINGS, GENERIC_ISSUE_JSON, SRC){
+    timestamps {
+        STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
+                            
+        def utils = new Utils()
+        utils.cmd("""
+        set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
+        set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
+        set SRC=${SRC}
+        stebi transform -r=0
+        """)
+    }
+}
+
+def sonarScaner(SRC, MEMORY_FOR_JAVA, projectNameEDT, GENERIC_ISSUE_JSON){
+    withSonarQubeEnv('Sonar') {
+        def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
+
+        // if (!perf_catalog.isEmpty()) {
+        //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${perf_catalog}\\genericCoverage.xml\""
+        //
+
+        def scannerHome = tool 'SonarQube Scanner';
+
+        def utils = new Utils()
+
+        utils.cmd("""
+        @set SRC=\"${SRC}\"
+        @echo %SRC%
+        @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
+        ${scannerHome}\\sonar-scanner\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
+        """)
+
+        PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
     }
 }
