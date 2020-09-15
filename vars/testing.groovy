@@ -233,8 +233,11 @@ def call(Map buildEnv){
                                     //     }
                                         //}
                                         //}
-                                        stage('EDT') {
-                                            steps {
+                                        // stage('EDT') {
+                                            agent {
+                                                label 'testserver'
+                                            }
+                                            // steps {
                                                 timestamps {
                                                     script {
                                                     def utils = new Utils()
@@ -247,50 +250,50 @@ def call(Map buildEnv){
                                                         """)
                                                     }
                                                 }
-                                            }
-                                        }
-                                        stage('Конвертация результатов EDT') {
-                                            agent {
-                                                label 'FirstNode'
-                                            }
-                                            steps {
-                                                timestamps {
-                                                    script {
-                                                        def utils = new Utils()
+                                            // }
+                                        //  }
+                                        // stage('Конвертация результатов EDT') {
+                                        //     agent {
+                                        //         label 'FirstNode'
+                                        //     }
+                                        //     steps {
+                                        //         timestamps {
+                                        //             script {
+                                        //                 def utils = new Utils()
                                                         
-                                                        if (oneAgent.trim().equals("true")) {
-                                                            utils.checkoutSCM(buildEnv)
-                                                        }
+                                        //                 if (oneAgent.trim().equals("true")) {
+                                        //                     utils.checkoutSCM(buildEnv)
+                                        //                 }
 
-                                                        utils.cmd("""
-                                                        set SRC=\"${SRC}\"
-                                                        stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
-                                                        """)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        stage('Трансформация результатов') {
-                                            agent {
-                                                label 'FirstNode'
-                                            }
-                                            steps {
-                                                timestamps {
-                                                    script {
-                                                        STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
+                                        //                 utils.cmd("""
+                                        //                 set SRC=\"${SRC}\"
+                                        //                 stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
+                                        //                 """)
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }
+                                        // stage('Трансформация результатов') {
+                                        //     agent {
+                                        //         label 'FirstNode'
+                                        //     }
+                                        //     steps {
+                                        //         timestamps {
+                                        //             script {
+                                        //                 STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
                                                         
-                                                        def utils = new Utils()
-                                                        utils.cmd("""
-                                                        set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
-                                                        set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
-                                                        set SRC=${SRC}
+                                        //                 def utils = new Utils()
+                                        //                 utils.cmd("""
+                                        //                 set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
+                                        //                 set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
+                                        //                 set SRC=${SRC}
 
-                                                        stebi transform -r=0
-                                                        """)
-                                                    }
-                                                }
-                                            }
-                                        }    
+                                        //                 stebi transform -r=0
+                                        //                 """)
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }    
                                     }
 
                                 } 
