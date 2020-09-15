@@ -210,7 +210,87 @@ def call(Map buildEnv){
                                 stage("Sonar Cheking")
                                 {
                                     if (runSonar.trim().equals("true")) {
-                                        
+                                                                    // stage('bsl-language-server') {
+                                        //     steps {
+                                        //         timestamps {
+                                        //             script {
+                                        //                 BSL_LS_JAR = "${toolsTargetDir}/bsl-language-server.jar"
+                                        //                 BSL_LS_PROPERTIES = "${toolsTargetDir}/bsl-language-server.conf"
+
+                                        //                 def utils = new Utils()
+                                        //                 utils.cmd("java -Xmx${MEMORY_FOR_JAVA}g -jar ${BSL_LS_JAR} -a -s \"${SRC}\" -r generic -c \"${BSL_LS_PROPERTIES}\" -o \"${RESULT_CATALOG}\"")
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }
+                                        //stage('АПК') {
+                                    // steps {
+                                    //     timestamps {
+                                    //         script {
+                                    //             def cmd_properties = "\"acc.propertiesPaths=${ACC_PROPERTIES};acc.catalog=${CURRENT_CATALOG};acc.sources=${SRC};acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};acc.recreateProject=${ACC_recreateProject}\""
+                                    //             cmd("runner run --ibconnection /F${ACC_BASE} --db-user ${ACC_USER} --command ${cmd_properties} --execute \"${BIN_CATALOG}acc-export.epf\" --ordinaryapp=1")
+                                    //         }
+                                    //     }
+                                        //}
+                                        //}
+                                        stage('EDT') {
+                                            steps {
+                                                timestamps {
+                                                    script {
+                                                    def utils = new Utils()
+                                                    if (fileExists("${EDT_VALIDATION_RESULT}")) {
+                                                        utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
+                                                    }
+                                                    utils.cmd("""
+                                                        @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
+                                                        ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
+                                                        """)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        stage('Конвертация результатов EDT') {
+                                            agent {
+                                                label 'FirstNode'
+                                            }
+                                            steps {
+                                                timestamps {
+                                                    script {
+                                                        def utils = new Utils()
+                                                        
+                                                        if (oneAgent.trim().equals("true")) {
+                                                            utils.checkoutSCM(buildEnv)
+                                                        }
+
+                                                        utils.cmd("""
+                                                        set SRC=\"${SRC}\"
+                                                        stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
+                                                        """)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        stage('Трансформация результатов') {
+                                            agent {
+                                                label 'FirstNode'
+                                            }
+                                            steps {
+                                                timestamps {
+                                                    script {
+                                                        STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
+                                                        
+                                                        def utils = new Utils()
+                                                        utils.cmd("""
+                                                        set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
+                                                        set GENERIC_ISSUE_JSON=${GENERIC_ISSUE_JSON}
+                                                        set SRC=${SRC}
+
+                                                        stebi transform -r=0
+                                                        """)
+                                                    }
+                                                }
+                                            }
+                                        }    
                                     }
 
                                 } 
