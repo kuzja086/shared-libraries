@@ -209,6 +209,9 @@ def call(Map buildEnv){
                                 }
                                 stage("Sonar Cheking")
                                 {
+                                    agent {
+                                        label 'testserver'
+                                    }
                                     if (runSonar.trim().equals("true")) {
                                                                     // stage('bsl-language-server') {
                                         //     steps {
@@ -234,9 +237,6 @@ def call(Map buildEnv){
                                         //}
                                         //}
                                         // stage('EDT') {
-                                            agent {
-                                                label 'testserver'
-                                            }
                                             // steps {
                                                 timestamps {
                                                     script {
