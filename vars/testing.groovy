@@ -229,7 +229,8 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             if (runSonar.trim().equals("true")) {           
-                                edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
+                                edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName) 
+                                //АПК                                
                             }
                         } 
                     }
