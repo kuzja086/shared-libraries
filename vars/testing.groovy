@@ -87,6 +87,9 @@ def call(Map buildEnv){
                 }
             }
             stage("Запуск") {
+                agent { 
+                                        label 'FirstNode'
+                                    }
                 steps {
                     timestamps {
                         script {
@@ -207,11 +210,7 @@ def call(Map buildEnv){
                                     }
 
                                 }
-                                stage("Sonar Cheking")
-                                {
-                                    agent { 
-                                        label 'FirstNode'
-                                    }
+                                stage("Sonar Cheking"){
                                     if (runSonar.trim().equals("true")) {
                                         
                                         edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName)                                 
@@ -230,9 +229,9 @@ def call(Map buildEnv){
                             // parallel dropDbTasks 
 						    //parallel updateDbTasks
                         // parallel backupTasks
-//                         parallel restoreTasks
-//                         parallel createDbTasks
-//                         parallel runHandlers1cTasks
+                        //                         parallel restoreTasks
+                        //                         parallel createDbTasks
+                        //                         parallel runHandlers1cTasks
                         }
                     }
                 }
