@@ -372,7 +372,7 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
 }
 
 def edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName){
-    timestamps{{
+    timestamps{
         def utils = new Utils()
         if (fileExists("${EDT_VALIDATION_RESULT}")) {
             utils.cmd("@DEL \"${EDT_VALIDATION_RESULT}\"")
