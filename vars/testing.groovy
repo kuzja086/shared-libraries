@@ -185,7 +185,10 @@ def call(Map buildEnv){
                 }
             }
             stage("Sonar Initialization"){
-                 steps {
+                agent {
+                    label 'testserver'
+                }
+                steps {
                     timestamps {
                         script {
                             if (runSonar.trim().equals("true")){ 
