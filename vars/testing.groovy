@@ -347,9 +347,9 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverage
             def projectHelpers = new ProjectHelpers()
             def utils = new Utils()
 
-            utils.cmd("""
-             coverage-cli start --infobase \"${infobase}\" --output \"${coverageFile}\" --debugger \"${debugger}\"  
-            """)
+            // utils.cmd("""
+            //  coverage-cli start --infobase \"${infobase}\" --output \"${coverageFile}\" --debugger \"${debugger}\"  
+            // """)
             projectHelpers.unlocking1cBase(testbaseConnString, base1CCredentialID)
         }
     // }
@@ -362,10 +362,10 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
             def utils = new Utils()
             
             projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase, testFeature)        
-            utils.cmd("""
-             coverage-cli stop 
-             coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
-            """)
+            // utils.cmd("""
+            //  coverage-cli stop 
+            //  coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
+            // """)
             // TODO Остановка замеров и покрытия и их конвертация
             // coverage-cli stop 
             // Конвертацию сделать в Pipeline sonar
