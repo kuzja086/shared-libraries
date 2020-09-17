@@ -379,7 +379,7 @@ def edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName){
         }
         utils.cmd("""
         @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-        ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
+         ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
         """)
     }
 }
