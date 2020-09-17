@@ -56,6 +56,7 @@ def call(Map buildEnv){
             def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
             def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
             def oneAgent = getParametrValue(buildEnv, 'oneAgent')
+            def testFeature = getParametrValue(buildEnv, 'testFeature')
         }
 
         stages{
@@ -167,7 +168,8 @@ def call(Map buildEnv){
                                                 base1CCredentialID,
                                                 testbaseConnString,
                                                 "${server1c}:${agent1cPort}",
-                                                testbase
+                                                testbase,
+                                                testFeature
                                             )
                                         }
                                     }    
@@ -346,23 +348,23 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverage
             def utils = new Utils()
 
             utils.cmd("""
-            coverage-cli start --infobase \"${infobase}\" --output \"${coverageFile}\" --debugger \"${debugger}\"  
+             coverage-cli start --infobase \"${infobase}\" --output \"${coverageFile}\" --debugger \"${debugger}\"  
             """)
             projectHelpers.unlocking1cBase(testbaseConnString, base1CCredentialID)
         }
     // }
 }
 
-def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase){
+def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase, testFeature){
     // stage("Тестирование Vanessa") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
             def utils = new Utils()
             
-            projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase)        
+            projectHelpers.test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase, testFeature)        
             utils.cmd("""
-            coverage-cli stop 
-            coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
+             coverage-cli stop 
+             coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
             """)
             // TODO Остановка замеров и покрытия и их конвертация
             // coverage-cli stop 

@@ -47,6 +47,7 @@ def getDefaultParams(){
         // Тестирование
         'debugger' : 'http://192.168.0.112:2450', // Адрес сервера отладки
         'runTesting' : 'true', // Проводить тестирование
+        'testFeature' : 'false', // Запускать тестовые фичи
 
         //Git
         'toolsBranch' : 'master', // Ветка Git по умолчанию
