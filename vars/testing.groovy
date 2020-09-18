@@ -341,7 +341,7 @@ def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
     // }
 }
 
-def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverageFile, debugger) {
+def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverageFile, debugger, runSonar) {
     // stage("Запуск 1с обработки на ${infobase}") {
         timestamps {
             // TODO Запуск начала замеров покрытия
@@ -359,7 +359,7 @@ def runHandlers1cTask(infobase, base1CCredentialID, testbaseConnString, coverage
     // }
 }
 
-def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase, testFeature){
+def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbase, testFeature, runSonar){
     // stage("Тестирование Vanessa") {
         timestamps {
             def projectHelpers = new ProjectHelpers()
