@@ -297,7 +297,7 @@ def call(Map buildEnv){
                                 initDistribFiles()
                                 dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath)
                                 loadConfigFromFiles(platform1C, xmlPath, catalog1c, ib)
-                                saveCF(cfPath, catalog1c? projectName, ib)
+                                saveCF(cfPath, catalog1c, projectName, ib)
                                 // TODO Расширения списком
                             }
                         }
