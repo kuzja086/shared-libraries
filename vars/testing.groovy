@@ -296,7 +296,7 @@ def call(Map buildEnv){
                             if (makeDistrib.trim().equals("true")) {  
                                 initDistribFiles()
                                 dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath)
-                                loadConfigFromFiles(platform1C, xmlPath, ib)
+                                loadConfigFromFiles(catalog1c, xmlPath, ib)
                                 saveCF(cfPath, catalog1c, projectName, ib)
                                 // TODO Расширения списком
                             }
@@ -494,6 +494,8 @@ def initDistribFiles(){
 def dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath){
     timestamps{
         def utils = new Utils()
+        // TODO Переделать на норм параметры.
+        projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
         utils.cmd("""
             @set RING_OPTS = -Dfile.encoding=UTF-8 -Dosgi.nl=ru
             @set RING_OPTS = -Xmx${memoryForJava}g
