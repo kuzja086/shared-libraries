@@ -97,7 +97,7 @@ def call(Map buildEnv){
                                 catalog1c = platform1C
                             }
 
-                            IB = "File=${TEMP_CATALOG}"
+                            IB = "File=${tempCatalog}"
                         }
                     }
                 }
