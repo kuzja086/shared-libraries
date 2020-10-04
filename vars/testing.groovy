@@ -97,7 +97,7 @@ def call(Map buildEnv){
                                 catalog1c = platform1C
                             }
 
-                            IB = "File=${tempCatalog}"
+                            ib = "File=${tempCatalog}"
                         }
                     }
                 }
@@ -296,7 +296,7 @@ def call(Map buildEnv){
                             if (makeDistrib.trim().equals("true")) {  
                                 initDistribFiles()
                                 dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath)
-                                loadConfigFromFiles(platform1C, xmlPath, catalog1c, ib)
+                                loadConfigFromFiles(platform1C, xmlPath, ib)
                                 saveCF(cfPath, catalog1c, projectName, ib)
                                 // TODO Расширения списком
                             }
