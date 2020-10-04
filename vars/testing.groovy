@@ -499,7 +499,7 @@ def dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, x
     timestamps{
         def utils = new Utils()
         // TODO Переделать на норм параметры.
-        projectName = pwd()"\\${projectNameEDT}"
+        projectName = "${tempCatalog}\\${projectNameEDT}"
         utils.cmd("""
             @set RING_OPTS = -Dfile.encoding=UTF-8 -Dosgi.nl=ru
             @set RING_OPTS = -Xmx${memoryForJava}g
