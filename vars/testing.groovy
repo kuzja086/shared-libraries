@@ -60,6 +60,7 @@ def call(Map buildEnv){
             def xmlPath = getParametrValue(buildEnv, 'xmlPath')
             def cfPath = getParametrValue(buildEnv, 'cfPath')
             def catalog1c = getParametrValue(buildEnv, 'catalog1c')
+            def makeDistrib = getParametrValue(buildEnv, 'makeDistrib')
         }
 
         stages{
