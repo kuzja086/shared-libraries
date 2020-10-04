@@ -52,7 +52,7 @@ def getDefaultParams(){
         'toolsRepo' : 'https://github.com/kuzja086/testing_tool.git', // Репозитарий с инструментами для тестирования
 
         //Sonar
-        'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
+        'memoryForJava' : '16', // Количество ГБ для выполнения операций на JAVA
         'oneAgent' : 'false', // Пайплайн выполняется на одном агенте
         'runSonar' : 'true', // Запускать проверку в SonarQube
 
