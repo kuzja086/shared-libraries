@@ -508,8 +508,8 @@ def loadConfigFromFiles(catalog1c, xmlPath, ib){
 
         utils.cmd("""
         cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
-        1cv8.exe CREATEINFOBASE ${IB}
-        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${IB} /LoadConfigFromFiles ${xmlPath} /UpdateDBCfg
+        1cv8.exe CREATEINFOBASE ${ib}
+        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} /LoadConfigFromFiles ${xmlPath} /UpdateDBCfg
         """)
     }
 }
