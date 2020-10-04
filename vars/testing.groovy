@@ -481,7 +481,7 @@ def sonarScaner(SRC, memoryForJava, projectNameEDT, GENERIC_ISSUE_JSON){
 
 def initDistribFiles(){
     timestamps {
-        dir(TEMP_CATALOG) {
+        dir(tempCatalog) {
             deleteDir()
         }
 
