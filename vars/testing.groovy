@@ -93,7 +93,7 @@ def call(Map buildEnv){
 
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
                             
-                            if (catalog1c = ''){
+                            if (catalog1c == ''){
                                 catalog1c = platform1C
                             }
 
