@@ -294,6 +294,10 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             if (makeDistrib.trim().equals("true")) {  
+                                // TODO Передалить на норм  параметры
+                                def xmlPath = getParametrValue(buildEnv, 'xmlPath')
+                                def cfPath = getParametrValue(buildEnv, 'cfPath')
+                                def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')
                                 initDistribFiles()
                                 dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath)
                                 loadConfigFromFiles(catalog1c, xmlPath, ib)
@@ -495,7 +499,7 @@ def dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, x
     timestamps{
         def utils = new Utils()
         // TODO Переделать на норм параметры.
-        projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
+        projectName = pwd()"\\${projectNameEDT}"
         utils.cmd("""
             @set RING_OPTS = -Dfile.encoding=UTF-8 -Dosgi.nl=ru
             @set RING_OPTS = -Xmx${memoryForJava}g
