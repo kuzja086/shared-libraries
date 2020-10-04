@@ -30,15 +30,11 @@ def getDefaultParams(){
         'infobase' : 'tempBase', // Имя базы на сервере
         'tempCatalog' : "${CURRENT_CATALOG}\\temp", // Служебный каталог
         'serverCopyPath' : '\\\\sqlserver\\temp_for_1c$\\Kozynskiy\\jenkins',
-        'platform1C' : '8.3.14.1779', //Версия платформы
+        'platform1C' : '8.3.17.1496', //Версия платформы
         'serverSql' : 'sqlserver\\sqlexpress', // Адрес sql сервера
-        'xmlPath' : "${CURRENT_CATALOG}\\xmlpath", // Путь к выгрузке файлов конфигурации
-        'cfPath' : "${CURRENT_CATALOG}\\build", // Каталог для выгрузкки *.cf и *.cfe
         'emailForNotification' : 'kozs@tlink.ru', // Email для отправки результатов сборки
-        'saveExtensionInFile' : 'false', // Сохранить расширение в файл *.cfe
-        'extension' : "extension", // Имя расширения по умолчанию
-        'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension", // Путь к выгрузке файлов расширения
         'tempCatalpgOtherDisc' : 'P:\\Козинский', // Временный каталог на другом диске
+        'catalog1c' : "", // Имя каталога с платформой
 
         // EDT
         'edtVersion' : '2020.5', // Версия EDT
@@ -58,6 +54,14 @@ def getDefaultParams(){
         //Sonar
         'memoryForJava' : '2', // Количество ГБ для выполнения операций на JAVA
         'oneAgent' : 'false', // Пайплайн выполняется на одном агенте
-        'runSonar' : 'true' // Запускать проверку в SonarQube
+        'runSonar' : 'true', // Запускать проверку в SonarQube
+
+        // Создание Дистрибутивов
+        'makeDistrib' : 'true',
+        'xmlPath' : "${CURRENT_CATALOG}\\xmlpath", // Путь к выгрузке файлов конфигурации
+        'cfPath' : "${CURRENT_CATALOG}\\buildDistrib", // Каталог для выгрузкки *.cf и *.cfe
+        'saveExtensionInFile' : 'false', // Сохранить расширение в файл *.cfe
+        'extension' : "extension", // Имя расширения по умолчанию
+        'xmlPathExtension' : "${CURRENT_CATALOG}\\xmlpathExtension" // Путь к выгрузке файлов расширения
     ]
 }

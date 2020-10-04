@@ -52,15 +52,21 @@ def call(Map buildEnv){
             def projectNameEDT = getParametrValue(buildEnv, 'projectNameEDT')
             def runTesting = getParametrValue(buildEnv, 'runTesting')
             def runSonar = getParametrValue(buildEnv, 'runSonar')
-            def MEMORY_FOR_JAVA = getParametrValue(buildEnv, 'memoryForJava')
+            def memoryForJava = getParametrValue(buildEnv, 'memoryForJava')
             def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
-            def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
+            def edtVersion      = getParametrValue(buildEnv, 'edtVersion')
             def oneAgent = getParametrValue(buildEnv, 'oneAgent')
             def testFeature = getParametrValue(buildEnv, 'testFeature')
+            def xmlPath = getParametrValue(buildEnv, 'xmlPath')
+            def cfPath = getParametrValue(buildEnv, 'cfPath')
+            def catalog1c = getParametrValue(buildEnv, 'catalog1c')
         }
 
         stages{
             stage('Инициализация') {
+                agent {
+                    label 'FirstNode'
+                }
                 steps {
                     timestamps {
                         script {
@@ -83,6 +89,14 @@ def call(Map buildEnv){
                             dir ('build') {
                                 writeFile file:'dummy', text:''
                             }
+
+                            projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
+                            
+                            if (catalog1c = ''){
+                                catalog1c = platform1C
+                            }
+
+                            IB = "File=${TEMP_CATALOG}"
                         }
                     }
                 }
@@ -220,7 +234,6 @@ def call(Map buildEnv){
                                 SRC = "./${projectNameEDT}/src"
 
                                 EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
-                                projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
 
                                 perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
                             }
@@ -236,7 +249,7 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             if (runSonar.trim().equals("true")) {           
-                                edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName) 
+                                edtCheck(EDT_VALIDATION_RESULT, edtVersion, tempCatalog, projectName) 
                                 //АПК                                
                             }
                         } 
@@ -266,7 +279,25 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             if (runSonar.trim().equals("true")) {  
-                                sonarScaner(SRC, MEMORY_FOR_JAVA, projectNameEDT, GENERIC_ISSUE_JSON)   
+                                sonarScaner(SRC, memoryForJava, projectNameEDT, GENERIC_ISSUE_JSON)   
+                            }
+                        }
+                    }
+                }
+            }
+            stage("Making Distribution"){
+                agent {
+                    label 'testserver'
+                }
+                steps {
+                    timestamps {
+                        script {
+                            if (makeDistrib.trim().equals("true")) {  
+                                initDistribFiles()
+                                dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath)
+                                loadConfigFromFiles(platform1C, xmlPath, catalog1c, ib)
+                                saveCF(cfPath, catalog1c? projectName, ib)
+                                // TODO Расширения списком
                             }
                         }
                     }
@@ -383,7 +414,7 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
     //TODO Сделать дымовые и другие тесты
 }
 
-def edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName){
+def edtCheck(EDT_VALIDATION_RESULT, edtVersion, tempCatalog, projectName){
     timestamps{
         def utils = new Utils()
         if (fileExists("${EDT_VALIDATION_RESULT}")) {
@@ -391,7 +422,7 @@ def edtCheck(EDT_VALIDATION_RESULT, EDT_VERSION, tempCatalog, projectName){
         }
         utils.cmd("""
         @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
-         ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
+         ring edt@${edtVersion} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
         """)
     }
 }
@@ -424,7 +455,7 @@ def transformResult(toolsTargetDir, STEBI_SETTINGS, GENERIC_ISSUE_JSON, SRC){
     }
 }
 
-def sonarScaner(SRC, MEMORY_FOR_JAVA, projectNameEDT, GENERIC_ISSUE_JSON){
+def sonarScaner(SRC, memoryForJava, projectNameEDT, GENERIC_ISSUE_JSON){
     withSonarQubeEnv('Sonar') {
         def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
 
@@ -439,10 +470,60 @@ def sonarScaner(SRC, MEMORY_FOR_JAVA, projectNameEDT, GENERIC_ISSUE_JSON){
         utils.cmd("""
         @set SRC=\"${SRC}\"
         @echo %SRC%
-        @set SONAR_SCANNER_OPTS=-Xmx${MEMORY_FOR_JAVA}g
+        @set SONAR_SCANNER_OPTS=-Xmx${memoryForJava}g
         ${scannerHome}\\sonar-scanner\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
         """)
 
         PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
+    }
+}
+
+def initDistribFiles(){
+    timestamps {
+        dir(TEMP_CATALOG) {
+            deleteDir()
+        }
+
+        dir(xmlPath){
+            deleteDir()
+        }
+    }
+}
+
+def dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath){
+    timestamps{
+        def utils = new Utils()
+        utils.cmd("""
+            @set RING_OPTS = -Dfile.encoding=UTF-8 -Dosgi.nl=ru
+            @set RING_OPTS = -Xmx${memoryForJava}g
+            ring edt@${edtVersion} workspace export --workspace-location ${tempCatalog} --project ${projectName} --configuration-files ${xmlPath}
+            """)
+    }    
+}
+
+def loadConfigFromFiles(catalog1c, xmlPath, ib){
+    timestamps{
+        def utils = new Utils()
+
+        utils.cmd("""
+        cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
+        1cv8.exe CREATEINFOBASE ${IB}
+        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${IB} /LoadConfigFromFiles ${xmlPath} /UpdateDBCfg
+        """)
+    }
+}
+
+def saveCF(cfPath, catalog1c, projectName, ib){
+    timestamps{
+        def utils = new Utils()
+
+        cfPath = "${cfPath}\\${projectName}.cf" 
+        // Разовое решение, так нужно было.
+        catalog1c = 'reliz_8.3.17.1496'
+        
+        utils.cmd("""
+        cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
+        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} /CreateDistributionFiles -cffile ${cfPath}
+        """)
     }
 }
