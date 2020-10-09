@@ -249,7 +249,8 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            if (runSonar.trim().equals("true")) {           
+                            if (runSonar.trim().equals("true")) {  
+                                projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"         
                                 edtCheck(EDT_VALIDATION_RESULT, edtVersion, tempCatalog, projectName) 
                                 //АПК                                
                             }
