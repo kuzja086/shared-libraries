@@ -443,7 +443,7 @@ def convertResult(SRC, EDT_VALIDATION_RESULT, RESULT_CATALOG){
 
         utils.cmd("""
         set SRC=\"${SRC}\"
-        stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
+         stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
         """)
     }
 }
