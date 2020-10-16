@@ -295,6 +295,7 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             if (makeDistrib.trim().equals("true")) {  
+                                // TODO Сохранять из конфигурации для тестирования
                                 // TODO Передалить на норм  параметры
                                 def xmlPath = getParametrValue(buildEnv, 'xmlPath')
                                 def cfPath = getParametrValue(buildEnv, 'cfPath')
@@ -408,8 +409,8 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
             
             if (runSonar.trim().equals("true")){
                 utils.cmd("""
-                 coverage-cli stop 
-                 coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
+                  coverage-cli stop 
+                  coverage-cli convert --input \"${coverageFile}\" --output \"${coverageFileOutput}\" --sources \"${SRC}\" --format EDT  
                 """)
             }
             // TODO Остановка замеров и покрытия и их конвертация
