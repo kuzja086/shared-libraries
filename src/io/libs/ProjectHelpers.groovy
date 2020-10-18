@@ -216,3 +216,55 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
         }
     }    
 }
+
+// Захватыват объектов в хранилище 
+// Параметры:
+//  platform1c - Версия платформы
+//  base1CCredentialID - Доступ к базе
+//  storages1cCredentalsID - Доступ к хранилищу
+//  ib - Путь к базе
+//  storagePath - Путь к хранилищу
+//  objectsPath - Путь к настройкам захвата объектов
+//  revised - Получать захваченные объекты
+//  extension - Имя расширения
+def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath, revised, extension = ""){
+     utils = new Utils()
+      withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'),
+        usernamePassword(credentialsId: "${storages1cCredentalsID}", usernameVariable: 'USERNAMESTORAGE', passwordVariable: 'PASSWORDSTORAGE')]){
+            utils = new Utils()
+
+            storageAuth = ""
+            if (storages1cCredentalsID != null && !storages1cCredentalsID.isEmpty()) {
+                storageAuth = "/ConfigurationRepositoryN username /ConfigurationRepositoryP password"
+                storageAuth = storageAuth.replace("username", USERNAMESTORAGE)
+                storageAuth = storageAuth.replace("password", PASSWORDSTORAGE)
+            }
+
+            baseAuth = "";
+            if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
+                admin1cUserLine = "/N username /P password"
+                admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
+                admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+            }
+
+            extensionString = ""
+            if (extension != null && !extension.isEmpty()){
+                extensionString = "-Extension ${extension}" 
+            }
+
+            revisedString = ""
+            if (revised.trim().equals("true")){
+                revisedString = "-revised"
+            }
+
+            returnCode = utils.cmd("""
+                cd /D C:\\Program Files (x86)\\1cv8\\${platform1c}\\bin\\
+                1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} ${baseAuth} 
+                /ConfigurationRepositoryF ${storagePath} ${storageAuth}
+                /ConfigurationRepositoryLock –Objects ${objectsPath} ${revisedString} ${extensionString} 
+                """)
+            if (returnCode != 0) {
+                utils.raiseError("Не удалось захватить объекты в хранилище ${storagePath}")
+            }
+    }
+}
