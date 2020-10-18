@@ -259,7 +259,7 @@ def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, stor
 
             returnCode = utils.cmd("""
                 cd /D C:\\Program Files (x86)\\1cv8\\${platform1c}\\bin\\
-                1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} ${baseAuth} 
+                1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS ${ib} ${baseAuth} 
                 /ConfigurationRepositoryF ${storagePath} ${storageAuth}
                 /ConfigurationRepositoryLock –Objects ${objectsPath} ${revisedString} ${extensionString} 
                 """)
