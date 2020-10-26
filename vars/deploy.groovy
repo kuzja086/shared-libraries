@@ -33,7 +33,7 @@ def call(Map buildEnv){
                             storagePath = listOfStorage
                             objectsPath = listOfObjects
                             //Для credentional Используются одинаковые данные, если в базе другие, нужно добавить служебного пользователя
-                            projectHelpers.storageLock(platform1C, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath))
+                            projectHelpers.storageLock(platform1C, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath)
 
                         }
                     }
