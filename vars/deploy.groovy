@@ -22,7 +22,7 @@ def call(Map buildEnv){
 
         stages{
             // parallel{
-            stage{
+            stage('Захват в хранилище'){
                 steps {
                     timestamps {
                         script {
