@@ -12,7 +12,7 @@ def call(Map buildEnv){
             // Заполнить параметры для пайплайна
             def CURRENT_CATALOG  = pwd()
             def platform1C       = getParametrValue(buildEnv, 'platform1C')
-            def CFPATH           = getParametrValue(buildEnv, 'cfPath')
+            //def CFPATH           = getParametrValue(buildEnv, 'cfPath')
             def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredentialID')
             def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
             def listOfBase = getParametrValue(buildEnv, 'listOfBase')
