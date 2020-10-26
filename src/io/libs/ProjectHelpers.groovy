@@ -227,7 +227,7 @@ def test1C(platform1c, base1CCredentialID, testbaseConnString, server1c, testbas
 //  objectsPath - Путь к настройкам захвата объектов
 //  revised - Получать захваченные объекты
 //  extension - Имя расширения
-def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath, revised, extension = ""){
+def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath, revised = false, extension = ""){
      utils = new Utils()
       withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'),
         usernamePassword(credentialsId: "${storages1cCredentalsID}", usernameVariable: 'USERNAMESTORAGE', passwordVariable: 'PASSWORDSTORAGE')]){

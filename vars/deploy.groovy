@@ -11,17 +11,13 @@ def call(Map buildEnv){
         environment {
             // Заполнить параметры для пайплайна
             def CURRENT_CATALOG  = pwd()
-            def EDT_VERSION      = getParametrValue(buildEnv, 'edtVersion')
-            def TEMP_CATALOG     = getParametrValue(buildEnv, 'tempCatalog')
-            def PROJECT_NAME     = getParametrValue(buildEnv, 'projectNameEDT')
-            def XMLPATH          = getParametrValue(buildEnv, 'xmlPath')
-            def PLATFORM1C       = getParametrValue(buildEnv, 'platform1C')
+            def platform1C       = getParametrValue(buildEnv, 'platform1C')
             def CFPATH           = getParametrValue(buildEnv, 'cfPath')
-            def SAVEEXTENSIONINFILE = getParametrValue(buildEnv, 'saveExtensionInFile')
-            def EXTENSION = getParametrValue(buildEnv, 'extension')
-            def XMLPATHEXTENSION = getParametrValue(buildEnv, 'xmlPathExtension')
             def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredentialID')
             def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
+            def listOfBase = getParametrValue(buildEnv, 'listOfBase')
+            def listOfStorage = getParametrValue(buildEnv, 'listOfStorage')
+            def listOfObjects = getParametrValue(buildEnv, 'ListOfObjects')
         }
 
         stages{
@@ -30,9 +26,14 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                            def projectHelpers = new ProjectHelpers()
-
-                            projectHelpers.storageLock(platform1C, bas)
+                            utils = new Utils()
+                            projectHelpers = new ProjectHelpers()
+                            //TODO Переделать на цикл
+                            ib = listOfBase
+                            storagePath = listOfStorage
+                            objectsPath = listOfObjects
+                            //Для credentional Используются одинаковые данные, если в базе другие, нужно добавить служебного пользователя
+                            projectHelpers.storageLock(platform1C, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath))
 
                         }
                     }
