@@ -20,7 +20,7 @@ def call(Map buildEnv){
             def listOfBase = getParametrValue(buildEnv, 'listOfBase')
             def listOfStorage = getParametrValue(buildEnv, 'listOfStorage')
             def listOfObjects = getParametrValue(buildEnv, 'ListOfObjects')
-            def server1c = getParametrValue(buildEnv, 'server1c')
+            def sersver1c = getParametrValue(buildEnv, 'server1c')
         }
 
         stages{
@@ -32,7 +32,7 @@ def call(Map buildEnv){
                             utils = new Utils()
                             projectHelpers = new ProjectHelpers()
                             //TODO Переделать на цикл
-                            ib = projectHelpers.getConnString(server1c, listOfBase, agent1cPort)
+                            ib = projectHelpers.getConnString(sersver1c, listOfBase, agent1cPort)
                             storagePath = listOfStorage
                             objectsPath = listOfObjects
                             //Для credentional Используются одинаковые данные, если в базе другие, нужно добавить служебного пользователя
