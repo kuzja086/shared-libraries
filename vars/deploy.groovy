@@ -14,8 +14,8 @@ def call(Map buildEnv){
             def platform1C       = getParametrValue(buildEnv, 'platform1C')
             //def CFPATH           = getParametrValue(buildEnv, 'cfPath')
             def base1CCredentialID = getParametrValue(buildEnv, 'base1CCredentialID')
-            //def server1c = getParametrValue(buildEnv, 'server1c')
-            //def agent1cPort = getParametrValue(buildEnv, 'agent1cPort') 
+            def server1c = getParametrValue(buildEnv, 'server1c')
+            def agent1cPort = getParametrValue(buildEnv, 'agent1cPort') 
             def storages1cCredentalsID = getParametrValue(buildEnv, 'storages1cCredentalsID')
             def listOfBase = getParametrValue(buildEnv, 'listOfBase')
             def listOfStorage = getParametrValue(buildEnv, 'listOfStorage')
@@ -31,7 +31,7 @@ def call(Map buildEnv){
                             utils = new Utils()
                             projectHelpers = new ProjectHelpers()
                             //TODO Переделать на цикл
-                            ib = projectHelpers.getConnString('sqlserver', listOfBase, '2641') // TODO что-то с кодировкой похоже, проверить и исправить
+                            ib = projectHelpers.getConnString(server1c, listOfBase, agent1cPort) // TODO что-то с кодировкой похоже, проверить и исправить
                             storagePath = listOfStorage
                             objectsPath = listOfObjects
                             //Для credentional Используются одинаковые данные, если в базе другие, нужно добавить служебного пользователя
