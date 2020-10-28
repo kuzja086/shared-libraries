@@ -242,9 +242,9 @@ def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, stor
 
             baseAuth = "";
             if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
-                admin1cUserLine = "/N username /P password"
-                admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
-                admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
+                baseAuth = "/N username /P password"
+                baseAuth = baseAuth1.replace("username", USERNAMEBASE)
+                baseAuth = baseAuth.replace("password", PASSWORDBASE)
             }
 
             extensionString = ""
