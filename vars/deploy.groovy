@@ -31,7 +31,7 @@ def call(Map buildEnv){
                             utils = new Utils()
                             projectHelpers = new ProjectHelpers()
                             //TODO Переделать на цикл
-                            ib = projectHelpers.getConnectionString(server1c, listOfBase, agent1cPort)
+                            ib = projectHelpers.getConnString(server1c, listOfBase, agent1cPort)
                             storagePath = listOfStorage
                             objectsPath = listOfObjects
                             //Для credentional Используются одинаковые данные, если в базе другие, нужно добавить служебного пользователя
