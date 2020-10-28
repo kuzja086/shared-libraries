@@ -11,7 +11,7 @@ def call(Map buildEnv){
         post { // Выполняется после сборки
             always {
                 script {
-                    if (currentBuil.result == "ABORTED") {
+                    if (currentBuild.result == "ABORTED") {
                         return
                     }
 
@@ -56,11 +56,8 @@ def call(Map buildEnv){
             def memoryForJava = getParametrValue(buildEnv, 'memoryForJava')
             def toolsTargetDir = getParametrValue(buildEnv, 'toolsTargetDir')
             def edtVersion      = getParametrValue(buildEnv, 'edtVersion')
-            def oneAgent = getParametrValue(buildEnv, 'oneAgent')
             def testFeature = getParametrValue(buildEnv, 'testFeature')
-            def xmlPath = getParametrValue(buildEnv, 'xmlPath')
             def cfPath = getParametrValue(buildEnv, 'cfPath')
-            def catalog1c = getParametrValue(buildEnv, 'catalog1c')
         }
 
         stages{
