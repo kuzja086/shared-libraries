@@ -11,7 +11,7 @@ def call(Map buildEnv){
         post { // Выполняется после сборки
             always {
                 script {
-                    if (currentBuild.result == "ABORTED") {
+                    if (currentBuil.result == "ABORTED") {
                         return
                     }
 
@@ -20,8 +20,9 @@ def call(Map buildEnv){
                     }
 
                     allure includeProperties: false, jdk: '', results: [[path: 'build/out/allure']]
+                
                 }
-            }
+            }            
         }
         //     // Варианты в документации
         //     failure {
@@ -60,7 +61,6 @@ def call(Map buildEnv){
             def xmlPath = getParametrValue(buildEnv, 'xmlPath')
             def cfPath = getParametrValue(buildEnv, 'cfPath')
             def catalog1c = getParametrValue(buildEnv, 'catalog1c')
-            def makeDistrib = getParametrValue(buildEnv, 'makeDistrib')
         }
 
         stages{
@@ -204,21 +204,13 @@ def call(Map buildEnv){
                 }
             }
             stage("Sonar Initialization"){
-                agent {
-                    label 'testserver'
-                }
                 steps {
                     timestamps {
                         script {
                             if (runSonar.trim().equals("true")){ 
                                 CURRENT_CATALOG = pwd()
-                                if (oneAgent.trim().equals("true")) {
-                                    RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
-                                }
-                                else {
-                                    RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
-                                    toolsTargetDir = "${toolsTargetDir}\\tools"
-                                }
+                                    
+                                RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
 
                                 def utils = new Utils()
                                 utils.checkoutSCM(buildEnv)
@@ -243,9 +235,6 @@ def call(Map buildEnv){
                 }        
             }
             stage("Sonar Cheking"){
-                agent {
-                    label 'testserver'
-                }
                 steps {
                     timestamps {
                         script {
@@ -259,9 +248,6 @@ def call(Map buildEnv){
                 }
             }
             stage("Подготовка результатов"){
-                agent {
-                    label 'FirstNode'
-                }
                 steps {
                     timestamps {
                         script {
@@ -274,39 +260,11 @@ def call(Map buildEnv){
                 }
             }
             stage("Sonar Scanner"){
-                agent {
-                    label 'testserver'
-                }
                 steps {
                     timestamps {
                         script {
                             if (runSonar.trim().equals("true")) {  
                                 sonarScaner(SRC, memoryForJava, projectNameEDT, GENERIC_ISSUE_JSON)   
-                            }
-                        }
-                    }
-                }
-            }
-            stage("Making Distribution"){
-                agent {
-                    label 'testserver'
-                }
-                steps {
-                    timestamps {
-                        script {
-                            if (makeDistrib.trim().equals("true")) {  
-                                // TODO Сохранять из конфигурации для тестирования
-                                // TODO Передалить на норм  параметры
-                                def xmlPath = getParametrValue(buildEnv, 'xmlPath')
-                                def cfPath = getParametrValue(buildEnv, 'cfPath')
-                                def tempCatalog = getParametrValue(buildEnv, 'tempCatalog')
-                                cur = pwd()
-                                projectName = "${cur}\\${projectNameEDT}"
-                                initDistribFiles()
-                                dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath)
-                                loadConfigFromFiles(catalog1c, xmlPath, ib)
-                                saveCF(cfPath, catalog1c, projectName, ib)
-                                // TODO Расширения списком
                             }
                         }
                     }
@@ -484,56 +442,5 @@ def sonarScaner(SRC, memoryForJava, projectNameEDT, GENERIC_ISSUE_JSON){
         """)
 
         PROJECT_URL = "${env.SONAR_HOST_URL}/dashboard?id=${projectNameEDT}"
-    }
-}
-
-def initDistribFiles(){
-    timestamps {
-        dir(tempCatalog) {
-            deleteDir()
-        }
-
-        dir(xmlPath){
-            deleteDir()
-        }
-    }
-}
-
-def dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath){
-    timestamps{
-        def utils = new Utils()
-        // TODO Переделать на норм параметры
-        utils.cmd("""
-            @set RING_OPTS = -Dfile.encoding=UTF-8 -Dosgi.nl=ru
-            @set RING_OPTS = -Xmx${memoryForJava}g
-            ring edt@${edtVersion} workspace export --workspace-location ${tempCatalog} --project ${projectName} --configuration-files ${xmlPath}
-            """)
-    }    
-}
-
-def loadConfigFromFiles(catalog1c, xmlPath, ib){
-    timestamps{
-        def utils = new Utils()
-
-        utils.cmd("""
-        cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
-        1cv8.exe CREATEINFOBASE ${ib}
-        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} /LoadConfigFromFiles ${xmlPath} /UpdateDBCfg
-        """)
-    }
-}
-
-def saveCF(cfPath, catalog1c, projectName, ib){
-    timestamps{
-        def utils = new Utils()
-
-        cfPath = "${cfPath}\\${projectName}.cf" 
-        // Разовое решение, так нужно было.
-        catalog1c = 'reliz_8.3.17.1496'
-        
-        utils.cmd("""
-        cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
-        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} /CreateDistributionFiles -cffile ${cfPath}
-        """)
     }
 }

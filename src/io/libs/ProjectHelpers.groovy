@@ -267,3 +267,39 @@ def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, stor
             }
     }
 }
+def dumpProjectEDTInFiles(memoryForJava, edtVersion, tempCatalog, projectName, xmlPath){
+    timestamps{
+        def utils = new Utils()
+        // TODO Переделать на норм параметры
+        utils.cmd("""
+            @set RING_OPTS = -Dfile.encoding=UTF-8 -Dosgi.nl=ru
+            @set RING_OPTS = -Xmx${memoryForJava}g
+            ring edt@${edtVersion} workspace export --workspace-location ${tempCatalog} --project ${projectName} --configuration-files ${xmlPath}
+            """)
+    }    
+}
+
+def loadConfigFromFiles(catalog1c, xmlPath, ib){
+    timestamps{
+        def utils = new Utils()
+
+        utils.cmd("""
+        cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
+        1cv8.exe CREATEINFOBASE ${ib}
+        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} /LoadConfigFromFiles ${xmlPath} /UpdateDBCfg
+        """)
+    }
+}
+
+def saveCF(cfPath, catalog1c, projectName, ib){
+    timestamps{
+        def utils = new Utils()
+        //TODO Переделать на исполнитель
+        cfPath = "${cfPath}\\${projectName}.cf" 
+        
+        utils.cmd("""
+        cd /D C:\\Program Files (x86)\\1cv8\\${catalog1c}\\bin\\
+        1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS /IBConnectionString ${ib} /CreateDistributionFiles -cffile ${cfPath}
+        """)
+    }
+}
