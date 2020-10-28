@@ -20,7 +20,6 @@ def call(Map buildEnv){
             def listOfBase = getParametrValue(buildEnv, 'listOfBase')
             def listOfStorage = getParametrValue(buildEnv, 'listOfStorage')
             def listOfObjects = getParametrValue(buildEnv, 'ListOfObjects')
-            def sersver1c = getParametrValue(buildEnv, 'server1c')
         }
 
         stages{
