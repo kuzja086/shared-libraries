@@ -258,7 +258,8 @@ def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, stor
             }
 
             returnCode = utils.cmd("""
-                       C:\\Program Files (x86)\\1cv8\\${platform1c}\\bin\\1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS ${ib} ${baseAuth} /ConfigurationRepositoryF ${storagePath} ${storageAuth} /ConfigurationRepositoryLock –Objects ${objectsPath} ${revisedString} ${extensionString} 
+                       cd /D C:\\Program Files (x86)\\1cv8\\${platform1c}\\bin\\
+                       1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS ${ib} ${baseAuth} /ConfigurationRepositoryF ${storagePath} ${storageAuth} /ConfigurationRepositoryLock –Objects ${objectsPath} ${revisedString} ${extensionString} 
                 """)
             if (returnCode != 0) {
                 utils.raiseError("Не удалось захватить объекты в хранилище ${storagePath}")
