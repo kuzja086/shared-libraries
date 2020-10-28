@@ -4,6 +4,25 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import groovy.json.JsonSlurper
 
+// получаем Строку соединения с базой
+def getConnectionString(Map buildEnv, String infobase) {
+    def isFileBase   = getParametrValue(buildEnv, 'isFileBase')
+    def fileBasePath = getParametrValue(buildEnv, 'fileBasePath')
+    def server1c     = getParametrValue(buildEnv, 'server1c')
+    def agent1cPort  = getParametrValue(buildEnv, 'agent1cPort')
+
+    if(isFileBase.trim().equals("true")) {
+       connectionString = "/F${fileBasePath}" 
+    }
+    else{
+        connectionString = "/S${server1c}:${agent1cPort}\\${infobase}"
+    }
+    return connectionString
+}
+
+def getConnectionString(Map buildEnv) {
+    getConnectionString(buildEnv, getParametrValue(buildEnv, 'infobase'))
+}
 // Выполняет команду в среде ОС Windows (batch) или Linux (bash) и возвращает статус операции
 //
 // Параметры:
