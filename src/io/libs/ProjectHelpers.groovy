@@ -86,11 +86,11 @@ def dropDb(server1c, agentPort, base, base1CCredentialID) {
         utils = new Utils
         admin1cUserLine = "";
         
-        returnCode = utils.cmd("cd /D ${executorPath}
-            executor.cmd -s ./executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}")
-        if (returnCode != 0) { 
-            error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
-        }
+            returnCode = utils.cmd("cd /D ${executorPath}
+                executor.cmd -s ./executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}")
+            if (returnCode != 0) { 
+                error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
+            }
     }    
 }
 
