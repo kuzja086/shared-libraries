@@ -83,8 +83,8 @@ def dropDb(server1c, agentPort, base, base1CCredentialID, fulldrop = false) {
     withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
         utils = new Utils()
         returnCode = utils.cmd("""
-            cd /D ${executorPath}
-            executor.cmd -s ./executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}
+             cd /D ${executorPath}
+             executor.cmd -s ./executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}
             """)
         if (returnCode != 0) { 
             error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
