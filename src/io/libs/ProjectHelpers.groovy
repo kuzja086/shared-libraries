@@ -81,32 +81,13 @@ def getConnString(server1c, infobase, agent1cPort) {
 //  sqlCredentialsID - CredentialsID для sql сервера
 //  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
 //
-def dropDb(server1c, agentPort, serverSql, base, base1CCredentialID, sqlCredentialsID, fulldrop = false) {
-    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'),
-        usernamePassword(credentialsId: "${sqlCredentialsID}", usernameVariable: 'USERNAMESQL', passwordVariable: 'PASSWORDSQL')]){
-       
-        utils = new Utils()
-
-        fulldropLine = "";
-        if (fulldrop) {
-            fulldropLine = "-fulldrop true"
-        }
-
+def dropDb(server1c, agentPort, base, base1CCredentialID) {
+    withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE'){
+        utils = new Utils
         admin1cUserLine = "";
-        if (base1CCredentialID != null && !base1CCredentialID.isEmpty()) {
-            admin1cUserLine = "-user username -passw password"
-            admin1cUserLine = admin1cUserLine.replace("username", USERNAMEBASE)
-            admin1cUserLine = admin1cUserLine.replace("password", PASSWORDBASE)
-        }
-
-        sqluserLine = "";
-        if (sqlCredentialsID != null && !sqlCredentialsID.isEmpty()) {
-            sqluserLine = "-sqluser username -sqlPwd password"
-            sqluserLine = sqluserLine.replace("username", USERNAMESQL)
-            sqluserLine = sqluserLine.replace("password", PASSWORDSQL)
-        }
         
-        returnCode = utils.cmd("powershell -file \"${env.WORKSPACE}/tools/copy_etalon/drop_db.ps1\" -server1c ${server1c} -agentPort ${agentPort} -serverSql ${serverSql} -infobase ${base} ${admin1cUserLine} ${sqluserLine} ${fulldropLine}")
+        returnCode = utils.cmd("cd /D ${executorPath}
+            executor.cmd -s ./executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}")
         if (returnCode != 0) { 
             error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
         }

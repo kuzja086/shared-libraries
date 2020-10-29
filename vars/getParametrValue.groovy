@@ -35,6 +35,7 @@ def getDefaultParams(){
         'emailForNotification' : 'kozs@tlink.ru', // Email для отправки результатов сборки
         'tempCatalpgOtherDisc' : 'P:\\Козинский', // Временный каталог на другом диске
         'catalog1c' : "", // Имя каталога с платформой
+        'executorPath' : 'D:\\Executor\\bin\\', // Путь к Исполнителю
 
         // EDT
         'edtVersion' : '2020.5', // Версия EDT

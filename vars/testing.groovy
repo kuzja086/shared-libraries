@@ -58,6 +58,7 @@ def call(Map buildEnv){
             def edtVersion      = getParametrValue(buildEnv, 'edtVersion')
             def testFeature = getParametrValue(buildEnv, 'testFeature')
             def cfPath = getParametrValue(buildEnv, 'cfPath')
+            def executorPath = getParametrValue(buildEnv, 'executorPath')
         }
 
         stages{
@@ -89,10 +90,6 @@ def call(Map buildEnv){
                             }
 
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
-                            
-                            if (catalog1c == ''){
-                                catalog1c = platform1C
-                            }
 
                             ib = "File=${tempCatalog}"
                         }
@@ -118,11 +115,9 @@ def call(Map buildEnv){
                                             // 1. Удаляем тестовую базу из кластера (если он там была) и очищаем клиентский кеш 1с
                                             dropDbTask(
                                                 server1c, 
-                                                server1cPort, 
-                                                serverSql, 
+                                                server1cPort,
                                                 testbase,
-                                                base1CCredentialID,
-                                                sqlCredentialsID
+                                                base1CCredentialID
                                             )
 
                                             // 2. Обновляем Эталонную базу из хранилища 1С (если применимо)
@@ -276,13 +271,11 @@ def call(){
     call([:])
 }
 
-def dropDbTask(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID) {
-    // stage("Удаление ${infobase}") {
-        timestamps {
-            def projectHelpers = new ProjectHelpers()
-            projectHelpers.dropDb(server1c, server1cPort, serverSql, infobase, base1CCredentialID, sqlCredentialsID)
-        }
-    // }
+def dropDbTask(server1c, server1cPort, infobase, base1CCredentialID) {
+    timestamps {
+        def projectHelpers = new ProjectHelpers()
+        projectHelpers.dropDb(server1c, server1cPort, infobase, base1CCredentialID)
+    }
 }
 
 def updateDbTask(platform1c, infobase, storage1cPath, storages1cCredentalsID, connString, base1CCredentialID) {
