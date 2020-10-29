@@ -274,7 +274,7 @@ def call(){
 def dropDbTask(server1c, server1cPort, infobase, base1CCredentialID) {
     timestamps {
         def projectHelpers = new ProjectHelpers()
-        projectHelpers.dropDb(server1c, server1cPort, infobase, base1CCredentialID)
+        projectHelpers.dropDb(server1c, server1cPort, infobase, base1CCredentialID, true)
     }
 }
 

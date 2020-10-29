@@ -75,15 +75,13 @@ def getConnString(server1c, infobase, agent1cPort) {
 // Параметры:
 //  server1c - сервер 1с 
 //  agentPort - порт агента кластера 1с
-//  serverSql - сервер sql
 //  base - база для удаления из кластера
 //  base1CCredentialID - CredentialsID Для базы 1С
-//  sqlCredentialsID - CredentialsID для sql сервера
 //  fulldrop - если true, то удаляется база из кластера 1С и sql сервера
 //
-def dropDb(server1c, agentPort, base, base1CCredentialID) {
+def dropDb(server1c, agentPort, base, base1CCredentialID, fulldrop = false) {
     withCredentials([usernamePassword(credentialsId: "${base1CCredentialID}", usernameVariable: 'USERNAMEBASE', passwordVariable: 'PASSWORDBASE')]){
-        utils = new Utils
+        utils = new Utils()
         returnCode = utils.cmd("""
             cd /D ${executorPath}
             executor.cmd -s ./executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}
