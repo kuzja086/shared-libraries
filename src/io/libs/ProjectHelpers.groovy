@@ -85,7 +85,7 @@ def dropDb(server1c, agentPort, base, base1CCredentialID, fulldrop = false) {
         
         returnCode = utils.cmd("""
              cd /D ${executorPath}
-             executor.cmd -s ${env.WORKSPACE}\\Executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}
+             executor.cmd -s ${env.WORKSPACE}\\tools\\Executor\\deleteBase.sbsl ${base} ${USERNAMEBASE} ${PASSWORDBASE}
             """)
         if (returnCode != 0) { 
             error "error when deleting base with COM ${server1c}\\${base}. See logs above fore more information."
