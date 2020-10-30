@@ -237,7 +237,7 @@ def storageLock(platform1c, base1CCredentialID, storages1cCredentalsID, ib, stor
                 revisedString = "-revised"
             }
 
-            storageLog = "${ENV.Workspace}/storagelog.txt"
+            storageLog = "${env.WORKSPACE}/storagelog.txt"
             returnCode = utils.cmd("""
                                     cd /D C:\\Program Files (x86)\\1cv8\\${platform1c}\\bin\\
                                     1cv8.exe DESIGNER /WA- /DISABLESTARTUPDIALOGS ${ib} ${baseAuth} /ConfigurationRepositoryF ${storagePath} ${storageAuth} /ConfigurationRepositoryLock –Objects ${objectsPath} ${revisedString} ${extensionString} /Out ${storageLog} 
