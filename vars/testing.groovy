@@ -301,16 +301,14 @@ def backupTask(serverSql, infobase, backupPath, sqlCredentialsID) {
 }
 
 def restoreTask(serverSql, infobase, backupPath, sqlCredentialsID) {
-    // stage("Востановление ${infobase} бекапа") {
-            timestamps {
-            sqlUtils = new SqlUtils()
-            utils = new Utils()
+    timestamps {
+        sqlUtils = new SqlUtils()
+        utils = new Utils()
 
-            sqlUtils.createEmptyDb(serverSql, infobase, sqlCredentialsID)
-            sqlUtils.restoreDb(serverSql, infobase, backupPath, sqlCredentialsID)
-            sqlUtils.clearBackups(backupPath)
-        }
-    // }
+        sqlUtils.createEmptyDb(serverSql, infobase, sqlCredentialsID)
+        sqlUtils.restoreDb(serverSql, infobase, backupPath, sqlCredentialsID)
+        sqlUtils.clearBackups(backupPath)
+    }
 }
 
 def createDbTask(server1c, serverSql, platform1c, infobase, sqlCredentialsID) {
@@ -378,6 +376,8 @@ def edtCheck(EDT_VALIDATION_RESULT, edtVersion, tempCatalog, projectName){
         @set RING_OPTS=-Dfile.encoding=UTF-8 -Dosgi.nl=ru
          ring edt@${edtVersion} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
         """)
+
+        // TODO stash and archive для всех Файлов
     }
 }
 
