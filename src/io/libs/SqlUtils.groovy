@@ -113,7 +113,10 @@ def restoreDb(dbServer, infobase, backupPath, sqlCredentialsID) {
 def clearBackups(backup_path) {
     utils = new Utils()
     echo "Deleting file ${backup_path}..."
-    returnCode = utils.cmd("oscript ${env.WORKSPACE}/tools/one_script_tools/deleteFile.os -file\"${backup_path}\"")
+    returnCode = utils.cmd("""
+        cd /D ${executorPath}
+        executor.cmd -s ${env.WORKSPACE}\\tools\\Executor\\deleteFile.sbsl ${backup_path}
+    """)
     if (returnCode != 0) {
         echo "Error when deleting file: ${backup_path}"
     }    
