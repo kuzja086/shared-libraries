@@ -63,9 +63,6 @@ def call(Map buildEnv){
 
         stages{
             stage('Инициализация') {
-                agent {
-                    label 'FirstNode'
-                }
                 steps {
                     timestamps {
                         script {
