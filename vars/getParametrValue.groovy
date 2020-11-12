@@ -38,7 +38,7 @@ def getDefaultParams(){
         'executorPath' : 'D:\\Executor\\bin\\', // Путь к Исполнителю
 
         // EDT
-        'edtVersion' : '2020.5', // Версия EDT
+        'edtVersion' : '2020.6', // Версия EDT
         'projectNameEDT' : 'projectNameEDT', // Имя проекта в EDT
 
         // Тестирование
