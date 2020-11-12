@@ -33,7 +33,7 @@ def call(Map buildEnv){
                             //TODO Переделать на цикл
                             ib = projectHelpers.getConnString(server1c, listOfBase, agent1cPort) // TODO что-то с кодировкой похоже, проверить и исправить
                             storagePath = listOfStorage
-                            objectsPath = "${env.WORKSPACE}"/"${listOfStorage}"
+                            objectsPath = "${env.WORKSPACE}"/"${listOfObjects}"
                             //Для credentional Используются одинаковые данные, если в базе другие, нужно добавить служебного пользователя
                             projectHelpers.storageLock(platform1C, base1CCredentialID, storages1cCredentalsID, ib, storagePath, objectsPath)
 
