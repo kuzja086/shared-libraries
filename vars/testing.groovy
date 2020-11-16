@@ -384,9 +384,6 @@ def edtCheck(EDT_VALIDATION_RESULT, edtVersion, tempCatalog, projectName){
 def convertResult(SRC, EDT_VALIDATION_RESULT, RESULT_CATALOG){
     timestamps {
         def utils = new Utils()
-        if (oneAgent.trim().equals("true")) {
-            utils.checkoutSCM(buildEnv)
-        }
 
         utils.cmd("""
         set SRC=\"${SRC}\"
