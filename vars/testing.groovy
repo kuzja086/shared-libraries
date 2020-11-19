@@ -218,6 +218,8 @@ def call(Map buildEnv){
                                 EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
 
                                 perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
+
+                                STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
                             }
                         }
                     }
@@ -393,9 +395,7 @@ def convertResult(SRC, EDT_VALIDATION_RESULT, RESULT_CATALOG){
 }
 
 def transformResult(toolsTargetDir, STEBI_SETTINGS, GENERIC_ISSUE_JSON, SRC){
-    timestamps {
-        STEBI_SETTINGS =  "${toolsTargetDir}/settings.json"
-                            
+    timestamps {                            
         def utils = new Utils()
         utils.cmd("""
         set GENERIC_ISSUE_SETTINGS_JSON=\"${STEBI_SETTINGS}\"
