@@ -58,6 +58,7 @@ def call(Map buildEnv){
                             SRC = "./${projectNameEDT}/src"
 
                             EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
+                            edtValidationSonar = "\\sonar_result\\edt-validation.csv"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
 
                             perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
@@ -102,8 +103,8 @@ def call(Map buildEnv){
                             """)
                         }
 
-                        archiveArtifacts artifacts: "${EDT_VALIDATION_RESULT}"
-                        stash name: "EDT_VALIDATION_RESULT", includes:"${EDT_VALIDATION_RESULT}"
+                        archiveArtifacts artifacts: edtValidationSonar
+                        stash name: "edtValidationSonar", includes: edtValidationSonar
                     }
                 }
             }
@@ -117,7 +118,7 @@ def call(Map buildEnv){
                             def utils = new Utils()
 
                             dir (RESULT_CATALOG)
-                            unstash name: "EDT_VALIDATION_RESULT"
+                            unstash name: "edtValidationSonar"
 
                             utils.cmd("""
                             set SRC=\"${SRC}\"
