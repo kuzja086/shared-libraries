@@ -40,13 +40,7 @@ def call(Map buildEnv){
                         script {
                             CURRENT_CATALOG = pwd()
 
-                            if (oneAgent.trim().equals("true")) {
-                                RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
-                                }
-                            else {
-                                RESULT_CATALOG = "${tempCatalpgOtherDisc}\\sonar_result"
-                                toolsTargetDir = "${toolsTargetDir}\\tools"
-                            }
+                            RESULT_CATALOG = "${CURRENT_CATALOG}\\sonar_result"
                             def utils = new Utils()
 
                             utils.checkoutSCM(buildEnv)
@@ -107,6 +101,9 @@ def call(Map buildEnv){
                             ring edt@${EDT_VERSION} workspace validate --workspace-location \"${tempCatalog}\" --file \"${EDT_VALIDATION_RESULT}\" --project-list \"${projectName}\"
                             """)
                         }
+
+                        archiveArtifacts artifacts: "${EDT_VALIDATION_RESULT}"
+                        stash name: "EDT_VALIDATION_RESULT", includes:"${EDT_VALIDATION_RESULT}"
                     }
                 }
             }
@@ -118,10 +115,9 @@ def call(Map buildEnv){
                     timestamps {
                         script {
                             def utils = new Utils()
-                            
-                            if (oneAgent.trim().equals("true")) {
-                                utils.checkoutSCM(buildEnv)
-                            }
+
+                            dir (RESULT_CATALOG)
+                            unstash name: "EDT_VALIDATION_RESULT"
 
                             utils.cmd("""
                             set SRC=\"${SRC}\"
