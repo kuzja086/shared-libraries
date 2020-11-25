@@ -156,6 +156,7 @@ def call(Map buildEnv){
 
                             // TODO Сделать универсально
                             archiveArtifacts artifacts: "sonar_result\\*.json"
+                            stash name: "transformResults", includes: "sonar_result\\*.json"
                         }
                     }
                 }
@@ -180,7 +181,7 @@ def call(Map buildEnv){
                 steps {
                     timestamps {
                         script {
-                        // dir('Repo') {
+                            unstash name: "transformResults"
                             withSonarQubeEnv('Sonar') {
                                 def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
 
