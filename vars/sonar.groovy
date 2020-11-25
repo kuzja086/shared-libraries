@@ -58,7 +58,7 @@ def call(Map buildEnv){
                             SRC = "./${projectNameEDT}/src"
 
                             EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
-                            edtValidationSonar = "\\sonar_result\\edt-validation.csv"
+                            edtValidationSonar = "sonar_result\\edt-validation.csv"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
 
                             perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
@@ -103,6 +103,7 @@ def call(Map buildEnv){
                             """)
                         }
 
+                        // TODO Сделать универсально
                         archiveArtifacts artifacts: edtValidationSonar
                         stash name: "edtValidationSonar", includes: edtValidationSonar
                     }
