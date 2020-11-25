@@ -58,7 +58,10 @@ def call(Map buildEnv){
                             SRC = "./${projectNameEDT}/src"
 
                             EDT_VALIDATION_RESULT = "${RESULT_CATALOG}\\edt-validation.csv"
-                            edtValidationSonar = "sonar_result\\edt-validation.csv"
+                            edtValidation = "sonar_result\\edt-validation.csv"
+                            edtValidationSonar = "sonar_result\\edt.json"
+                            bslValidationSonar = "sonar_result\\bsl-generic-json.json"
+                            accValidationSonar = "sonar_result\\acc.json"
                             projectName = "${CURRENT_CATALOG}\\${projectNameEDT}"
 
                             perf_catalog = "${tempCatalpgOtherDisc}\\coverage\\${projectNameEDT}"
@@ -104,8 +107,8 @@ def call(Map buildEnv){
                         }
 
                         // TODO Сделать универсально
-                        archiveArtifacts artifacts: edtValidationSonar
-                        stash name: "edtValidationSonar", includes: edtValidationSonar
+                        archiveArtifacts artifacts: edtValidation
+                        stash name: "edtValidation", includes: edtValidation
                     }
                 }
             }
@@ -118,13 +121,17 @@ def call(Map buildEnv){
                         script {
                             def utils = new Utils()
 
-                            dir (RESULT_CATALOG)
-                            unstash name: "edtValidationSonar"
+                            //dir (RESULT_CATALOG)
+                            unstash name: "edtValidation"
 
                             utils.cmd("""
                             set SRC=\"${SRC}\"
                             stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
                             """)
+
+                            // TODO Сделать универсально
+                            archiveArtifacts artifacts: edtValidationSonar
+                            stash name: "edtValidationSonar", includes: edtValidationSonar
                         }
                     }
                 }
@@ -146,6 +153,9 @@ def call(Map buildEnv){
 
                             stebi transform -r=0
                             """)
+
+                            // TODO Сделать универсально
+                            archiveArtifacts artifacts: "sonar_result\\*.json"
                         }
                     }
                 }
