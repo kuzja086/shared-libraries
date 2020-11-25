@@ -183,7 +183,7 @@ def call(Map buildEnv){
                         script {
                             unstash name: "transformResults"
                             withSonarQubeEnv('Sonar') {
-                                def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
+                                def scanner_properties = "-Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${projectNameEDT} -Dsonar.sources=\"${SRC}\" -Dsonar.ReportPaths=${GENERIC_ISSUE_JSON} -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl"
 
                                 // if (!perf_catalog.isEmpty()) {
                                 //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${perf_catalog}\\genericCoverage.xml\""
