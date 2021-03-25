@@ -126,7 +126,7 @@ def call(Map buildEnv){
 
                             utils.cmd("""
                             set SRC=\"${SRC}\"
-                            stebi convert -e \"${EDT_VALIDATION_RESULT}\" \"${RESULT_CATALOG}/edt.json\" 
+                            stebi convert -e ./sonar_result/edt-validation.csv ./sonar_result/edt.json\" 
                             """)
 
                             // TODO Сделать универсально
