@@ -49,7 +49,7 @@ def call(Map buildEnv){
                             dir(RESULT_CATALOG) {
                             deleteDir()
                             writeFile file: 'acc.json', text: '{"issues": []}'
-                                writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
+                            writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                             writeFile file: 'edt.json', text: '{"issues": []}'
                             }
 
@@ -187,7 +187,7 @@ def call(Map buildEnv){
 
                                 // if (!perf_catalog.isEmpty()) {
                                 //     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${perf_catalog}\\genericCoverage.xml\""
-                                // }
+                                // 
 
                                 def scannerHome = tool 'SonarQube Scanner';
 
@@ -206,6 +206,7 @@ def call(Map buildEnv){
                     }
                 }
             }
+        
         }
     }
 }
